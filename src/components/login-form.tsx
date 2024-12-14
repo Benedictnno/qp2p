@@ -18,6 +18,7 @@ import { AppDispatch, RootState } from "@/States/store";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+import { Toaster } from "@/components/ui/toaster";
 
 type FormData = {
   email: string;
@@ -36,21 +37,24 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-  const { success } = useSelector((state: RootState) => state.login);
+  const { success,error} = useSelector((state: RootState) => state.login);
 
   const submitData = (data: FormData) => {
     dispatch(LoginUser({ email: data.email, password: data.password }));
     console.log("Submitted data:", success);
-    toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
+    
+    if (error === "Unauthorized") {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
     if (success) {
       navigate("/");
     }
@@ -109,6 +113,7 @@ export function LoginForm() {
           </div>
         </form>
       </CardContent>
+    {error === "Unauthorized" && <Toaster />}
     </Card>
   );
 }

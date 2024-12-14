@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "./States/store.tsx";
 import ProtectedRoute from "./utils/ProtectedRoute.tsx";
 import PublicRoute from "./utils/PublicRoute.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,7 +20,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <NotFoundPage />,
-    children
+     children: [
+      { index: true, element: <Dashboard /> }, // Default child route
+      // { path: "profile", element: <Profile /> }, // Other child routes
+    ],
   },
   {
     path: "/login",
