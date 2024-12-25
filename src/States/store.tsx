@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import loginUserReducer from "./thunks/auth";
+import userBalancesReducer from "./thunks/balance";
 export const store = configureStore({
   reducer: {
-    login: loginUserReducer,
+    login: loginUserReducer,           
+    userBalances: userBalancesReducer,           
   },
 });
 export type AppDispatch = typeof store.dispatch;
