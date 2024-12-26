@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/States/store";
 import { userBalances } from "@/States/thunks/balance";
-// import { useToast } from "@/components/hooks/use-toast";
+
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
+  const { fiatBalance,
+  tonBalance } = useSelector((state: RootState) => state.userBalances);
+
   const handleCopy = () => {
     navigator.clipboard
       .writeText("iuygvbnmlughbnm,.mnsskjjjjjjsssssssssssss")
@@ -16,9 +19,14 @@ const Dashboard = () => {
         setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
       });
   };
+
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
+       const timeout = setTimeout(() => {
     dispatch(userBalances());
+     }, 5000);
+
+    return () => clearTimeout(timeout);
   }, []);
   const dashBoardCardStyle =
     "m-3 font-[' Inter, system-ui, Avenir, Helvetica, Arial, sans-serif'] font-semibold text-center";
@@ -28,7 +36,7 @@ const Dashboard = () => {
         <div className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
           <div className={`${dashBoardCardStyle}`}>
             <p>Fiat Balance</p>
-            <h2>NGN 200,000</h2>
+            <h2>NGN {fiatBalance}</h2>
           </div>
           <Button variant="outline" className="w-10/12 self-center">
             Add Funds
@@ -38,7 +46,7 @@ const Dashboard = () => {
           <div className={`${dashBoardCardStyle}`}>
             <p>Ton coin Balance</p>
 
-            <h2> 10 Ton </h2>
+            <h2> {tonBalance} Ton </h2>
           </div>
           <Button
             variant="outline"

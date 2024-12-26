@@ -10,8 +10,8 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user } = useSelector((state: RootState) => state.login);
    
-
-  if (!user) {
+const savedUser= JSON.parse(sessionStorage.getItem('user')) || user
+  if (!savedUser) {
     return <Navigate to="/login" replace />;
   } else if (user.role === "admin") {
     return <Navigate to="/admin" replace />;

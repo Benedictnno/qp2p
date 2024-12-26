@@ -6,9 +6,14 @@ export const userBalances = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/v1/fiat/fund"
+        "http://localhost:5000/api/v1/fiat/fund",
+        {
+  withCredentials: true,
+}
       );
-
+console.log('====================================');
+console.log(response);
+console.log('====================================');
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -46,6 +51,7 @@ const userBalancesSlice = createSlice({
       .addCase(userBalances.fulfilled, (state, action) => {
         state.loading = false;
         state.fiatBalance = action.payload?.data.wallet.balance
+        state.tonBalance = action.payload?.data.tonBalance.balance
         state.success = true;
 
       })

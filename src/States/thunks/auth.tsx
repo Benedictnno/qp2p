@@ -11,11 +11,12 @@ export const LoginUser = createAsyncThunk(
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/auth/login",
-        { email: login.email, password: login.password }
+        { email: login.email, password: login.password },{ withCredentials: true }
       );
      
      const user =  jwtDecode(response.data.refreshToken);
-     
+     sessionStorage.setItem('user', JSON.stringify(user));
+
       return user;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -32,7 +33,7 @@ export type Login = {
 };
 
 const initialState: Login = {
-  user: "",
+  user: " ",
   loading: false,
   error: null,
   success: false,
