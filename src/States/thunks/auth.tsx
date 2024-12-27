@@ -16,7 +16,9 @@ export const LoginUser = createAsyncThunk(
      
      const user =  jwtDecode(response.data.refreshToken);
      sessionStorage.setItem('user', JSON.stringify(user));
-
+console.log('====================================');
+console.log(JSON.parse(sessionStorage.getItem('user')));
+console.log('====================================');
       return user;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -33,7 +35,7 @@ export type Login = {
 };
 
 const initialState: Login = {
-  user: " ",
+  user: "",
   loading: false,
   error: null,
   success: false,

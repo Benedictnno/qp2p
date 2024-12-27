@@ -9,17 +9,27 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user } = useSelector((state: RootState) => state.login);
-   
-const savedUser= JSON.parse(sessionStorage.getItem('user')) || user
+
+  // Retrieve the saved user from sessionStorage, fallback to Redux user if null
+  const savedUser = React.useMemo(() => {
+    const sessionUser = sessionStorage.getItem('user');
+    return sessionUser ? JSON.parse(sessionUser) : user;
+  }, [user]);
+
+  // Debugging logs (optional, remove in production)
+  console.log("Saved User:", savedUser);
+  console.log("User:", user);
+
+  // Redirect logic
   if (!savedUser) {
     return <Navigate to="/login" replace />;
-  } else if (user.role === "admin") {
-    return <Navigate to="/admin" replace />;
-  }  
-  
-  return <>{children}</>;
-  
+  }
 
+  // if (user.role === "admin") {
+  //   return <Navigate to="/admin" replace />;
+  // }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

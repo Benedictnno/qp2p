@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/States/store";
 import { userBalances } from "@/States/thunks/balance";
-
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
@@ -22,11 +22,11 @@ const Dashboard = () => {
 
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
-       const timeout = setTimeout(() => {
+      //  const timeout = setTimeout(() => {
     dispatch(userBalances());
-     }, 5000);
+    //  }, 5000);
 
-    return () => clearTimeout(timeout);
+    // return () => clearTimeout(timeout);
   }, []);
   const dashBoardCardStyle =
     "m-3 font-[' Inter, system-ui, Avenir, Helvetica, Arial, sans-serif'] font-semibold text-center";
@@ -70,12 +70,12 @@ const Dashboard = () => {
             onClick={handleCopy}
           >
             <p className="w-20 truncate">
-              iuygvbnmlughbnm,.mnsskjjjjjjsssssssssssss
+              iuygvbnmlughbnmmnsskjjjjjjsssssssssssss
             </p>
             <span>{copied ? "Copied!" : "Copy"}</span>
           </Button>
         </div>
-        <div className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
+        <Link to="/user/transactions" className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
           <div className={`${dashBoardCardStyle}`}>
             <p>Number of fiat transactions</p>
             <h2> 100</h2>
@@ -84,7 +84,7 @@ const Dashboard = () => {
             <h3>50 sells</h3>
             <h3>50 Buys </h3>
           </div>
-        </div>
+        </Link>
       </div>
       <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
         <Chart />
