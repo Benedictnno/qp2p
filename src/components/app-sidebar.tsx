@@ -17,31 +17,18 @@ import {
 // This is sample data.
 const data = {
   navMain: [
+   
     {
-      title: "Getting Started",
+      title: "Control Panel",
       url: "#",
       items: [
         {
-          title: "Installation",
-          url: "#",
+          title: "main",
+          url: "/",
         },
         {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Building Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
+          title: "Transaction History",
+          url: "/user/transactions",
           isActive: true,
         },
         {
