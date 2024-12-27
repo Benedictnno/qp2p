@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { DateFormater } from '@/utils/Date.tsx'
 function TransactionHistory() {
   const [history, setHistory] = useState([]);
 
@@ -16,6 +16,7 @@ function TransactionHistory() {
     }
   }
 
+
   useEffect(() => {
     get();
   }, []);
@@ -30,6 +31,7 @@ function TransactionHistory() {
             <th scope="col" className="px-6 py-3">Quantity</th>
             <th scope="col" className="px-6 py-3">Status</th>
             <th scope="col" className="px-6 py-3">Fiat Amout (NGN)</th>
+            <th scope="col" className="px-6 py-3">Date</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +57,7 @@ function TransactionHistory() {
                 <td className="px-6 py-4">{item?.quantity || "N/A"}</td>
                 <td className="px-6 py-4">{item?.status || "N/A"}</td>
                 <td className="px-6 py-4">{item?.amount || "N/A"}</td>
+                <td className="px-6 py-4">{Date(item?.createdAt) || "N/A"}</td>
               </tr>
             ))
           )}
