@@ -16,10 +16,25 @@ export const LoginUser = createAsyncThunk(
      
      const user =  jwtDecode(response.data.refreshToken);
      sessionStorage.setItem('user', JSON.stringify(user));
-console.log('====================================');
-console.log(JSON.parse(sessionStorage.getItem('user')));
-console.log('====================================');
+
       return user;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "An error occurred");
+    }
+  }
+);
+export const RegisterUser = createAsyncThunk(
+  "register user",
+  async (login: { email: string; password: string , firstName: string,
+  lastName: string }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/auth/register",
+        { email: login.email, password: login.password,lastName:login.lastName,firstName:login.lastName },{ withCredentials: true }
+      );
+     
+
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
@@ -33,9 +48,23 @@ export type Login = {
   error: string | null | unknown;
   success: boolean;
 };
+export type RegisterUserState = {
+  email: string;
+  msg:string;
+  loading: boolean;
+  error: string | null | unknown;
+  success: boolean;
+};
 
 const initialState: Login = {
   user: "",
+  loading: false,
+  error: null,
+  success: false,
+};
+const RegisterUserState: RegisterUserState = {
+  email: "",
+  msg: "",
   loading: false,
   error: null,
   success: false,
@@ -64,5 +93,34 @@ const LoginUserSlice = createSlice({
       });
   },
 });
+const RegisterUserSlice = createSlice({
+  name: "Register User",
+ initialState: RegisterUserState,
+  reducers: {},
+  extraReducers:  (builder) => {
+    builder
+      .addCase(RegisterUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(RegisterUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.email = action.payload.email
+        state.msg = action.payload.message
+        state.success = true;
 
-export default LoginUserSlice.reducer;
+      })
+      .addCase(RegisterUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.msg = action.payload.message
+
+      });
+  },
+});
+
+export  const reducers = {
+  loginUser: LoginUserSlice.reducer,
+  registerUser: RegisterUserSlice.reducer,
+};

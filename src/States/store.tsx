@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loginUserReducer from "./thunks/auth";
+import {reducers} from "./thunks/auth";
 import userBalancesReducer from "./thunks/balance";
 export const store = configureStore({
   reducer: {
-    login: loginUserReducer,           
+    login:reducers.loginUser,           
+    registerUser:reducers.registerUser,           
     userBalances: userBalancesReducer,           
   },
 });

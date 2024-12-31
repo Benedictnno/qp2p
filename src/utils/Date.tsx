@@ -1,5 +1,5 @@
 
-export const DateFormater = (isoTimestamp) => {
+export const DateFormater = (isoTimestamp:string) => {
    
 
 // Convert to a Date object

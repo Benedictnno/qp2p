@@ -26,6 +26,7 @@ type FormData = {
 };
 
 export function LoginForm() {
+  
   const schema: ZodType<FormData> = z.object({
     email: z.string().email(),
     password: z.string().min(6).max(15),
@@ -51,7 +52,7 @@ export function LoginForm() {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
+        description: "incorrect email or password",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }

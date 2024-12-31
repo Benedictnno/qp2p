@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,13 @@ import { Label } from "@/components/ui/label";
 import { z, ZodType } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch, useSelector } from "react-redux";
+import { RegisterUser } from "@/States/thunks/auth";
+import { AppDispatch, RootState } from "@/States/store";
+import VerifyDialog from '@/utils/VerifyDialog'
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 type FormData = {
   firstName: string;
@@ -32,9 +40,10 @@ export function SignUp() {
       confirmPassword: z.string().min(6).max(15),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: "Password do not match",
+      message: "Passwords do not match",
       path: ["confirmPassword"],
     });
+  const dispatch: AppDispatch = useDispatch();
 
   const {
     register,
@@ -45,16 +54,36 @@ export function SignUp() {
   });
 
   const submitData = (data: FormData) => {
-    console.log("====================================");
-    console.log(data);
-    console.log("====================================");
+    dispatch(RegisterUser({ email: data.email, password: data.password , lastName:data.lastName,firstName:data.firstName}));
   };
+  
+  const { msg,error,success} = useSelector((state: RootState) => state.registerUser);
 
+ function toast() {
+   console.log('====================================');
+   console.log(msg,error,success);
+   console.log('====================================');
+   toast({
+    //  variant="outline",
+          title: "Scheduled: Catch up ",
+          description: msg,
+          action: (
+            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+          ),
+        })
+      
+ }
+
+ useEffect(() => {
+  toast()
+ }, [error,success])
+ 
   return (
+    <>
     <Card className="mx-auto max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Sign Up</CardTitle>
-        <CardDescription>
+        <CardDescription >
           Enter your details below to register for an account
         </CardDescription>
       </CardHeader>
@@ -111,6 +140,7 @@ export function SignUp() {
               required
               {...register("confirmPassword")}
             />
+          {errors.confirmPassword ?  <p> {errors.confirmPassword.message} </p> : ' '}
           </div>
           <Button
             type="submit"
@@ -128,5 +158,9 @@ export function SignUp() {
         </div>
       </CardContent>
     </Card>
+   
+   {success || error &&  <Toaster />}
+
+    </>
   );
 }

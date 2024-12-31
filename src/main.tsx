@@ -21,9 +21,9 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <NotFoundPage />,
-     children: [
+    children: [
       { index: true, element: <Dashboard /> }, // Default child route
-      {  path: "/user/transactions", element: <TransactionHistory /> }, // Default child route
+      { path: "/user/transactions", element: <TransactionHistory /> }, // Default child route
       // { path: "profile", element: <Profile /> }, // Other child routes
     ],
   },
@@ -35,7 +35,14 @@ const router = createBrowserRouter([
       </PublicRoute>
     ),
   },
-  { path: "/sign-up", element: <SignUp /> },
+  {
+    path: "/sign-up",
+    element: (
+      <PublicRoute>
+        <SignUp />
+      </PublicRoute>
+    ),
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
