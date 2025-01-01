@@ -114,7 +114,7 @@ const RegisterUserSlice = createSlice({
       .addCase(RegisterUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.msg = action.payload.message
+        state.msg = action?.payload?.message
 
       });
   },

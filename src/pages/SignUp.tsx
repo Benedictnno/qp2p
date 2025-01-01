@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,10 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "@/States/thunks/auth";
 import { AppDispatch, RootState } from "@/States/store";
-import VerifyDialog from '@/utils/VerifyDialog'
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/hooks/use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import Modal from '@/utils/Model';
 
 type FormData = {
   firstName: string;
@@ -44,6 +41,8 @@ export function SignUp() {
       path: ["confirmPassword"],
     });
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     register,
@@ -57,110 +56,114 @@ export function SignUp() {
     dispatch(RegisterUser({ email: data.email, password: data.password , lastName:data.lastName,firstName:data.firstName}));
   };
   
-  const { msg,error,success} = useSelector((state: RootState) => state.registerUser);
+  const { msg,error,success,loading} = useSelector((state: RootState) => state.registerUser);
 
- function toast() {
-   console.log('====================================');
-   console.log(msg,error,success);
-   console.log('====================================');
-   toast({
-    //  variant="outline",
-          title: "Scheduled: Catch up ",
-          description: msg,
-          action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-          ),
-        })
-      
- }
 
  useEffect(() => {
-  toast()
+   setIsModalOpen(true);
  }, [error,success])
  
+ if (loading) {
+  return <h3>Loading...</h3>
+ }
   return (
     <>
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Sign Up</CardTitle>
-        <CardDescription >
-          Enter your details below to register for an account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              type="text"
-              placeholder="John"
-              required
-              {...register("firstName")}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              type="text"
-              placeholder="Doe"
-              required
-              {...register("lastName")}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-              {...register("email")}
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+      <Card className="mx-auto max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Sign Up</CardTitle>
+          <CardDescription>
+            Enter your details below to register for an account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="John"
+                required
+                {...register("firstName")}
+              />
             </div>
-            <Input
-              id="password"
-              type="password"
-              required
-              {...register("password")}
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="confirmPassword"> Confirm Password</Label>
+            <div className="grid gap-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                required
+                {...register("lastName")}
+              />
             </div>
-            <Input
-              id="confirmPassword"
-              type="password"
-              required
-              {...register("confirmPassword")}
-            />
-          {errors.confirmPassword ?  <p> {errors.confirmPassword.message} </p> : ' '}
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                {...register("email")}
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                required
+                {...register("password")}
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="confirmPassword"> Confirm Password</Label>
+              </div>
+              <Input
+                id="confirmPassword"
+                type="password"
+                required
+                {...register("confirmPassword")}
+              />
+              {errors.confirmPassword ? (
+                <p> {errors.confirmPassword.message} </p>
+              ) : (
+                " "
+              )}
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              onClick={handleSubmit(submitData)}
+            >
+              Sign Up
+            </Button>
           </div>
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={handleSubmit(submitData)}
-          >
-            Sign Up
-          </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
-          <Link to="/login" className="underline">
-            Login
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
-   
-   {success || error &&  <Toaster />}
-
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+      {success || error ? (
+          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <h2 className="text-xl font-semibold mb-4">Hello from QP2P</h2>
+            <p className="text-gray-600 mb-4">
+             {msg}
+            </p>
+            <button
+              onClick={() => {setIsModalOpen(false), navigate("/login");}}
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+            >
+              Return to Login Page
+            </button>
+          </Modal>
+        ) : null}
     </>
   );
 }

@@ -13,6 +13,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import LogOut from "@/utils/LogOut"
 
 // This is sample data.
 const data = {
@@ -43,14 +44,7 @@ const data = {
           title: "Styling",
           url: "#",
         },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
+       
         {
           title: "Testing",
           url: "#",
@@ -74,69 +68,18 @@ const data = {
       ],
     },
     {
-      title: "API Reference",
+      title: "Auth",
       url: "#",
       items: [
         {
-          title: "Components",
+          title: "Change Password",
           url: "#",
         },
         {
-          title: "File Conventions",
+          title: "LogOut",
           url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
+         
+        }
       ],
     },
   ],
@@ -177,7 +120,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
+                          {item.title === "LogOut" ? (
+                            <a href={item.url} onClick={()=>LogOut()}>
+                              {item.title}
+                            </a>
+                          ) : (
+                            <a href={item.url}>{item.title}</a>
+                          )}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
@@ -189,5 +138,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

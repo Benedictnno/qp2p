@@ -12,6 +12,7 @@ import ProtectedRoute from "./utils/ProtectedRoute.tsx";
 import PublicRoute from "./utils/PublicRoute.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import TransactionHistory from "./pages/TransactionHistory.tsx";
+import VerificationPage from "./pages/VerificationPage.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <SignUp />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/verify/:token",
+    element: (
+      <PublicRoute>
+        <VerificationPage />
       </PublicRoute>
     ),
   },
