@@ -3,31 +3,19 @@ import Modal from "./Model";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { log } from "console";
-
+import { Navigate } from "react-router-dom";
 function LogOut() {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const navigate = useNavigate();
-log('logout')
+  console.log('logout');
   const verify = async () => {
-    await axios.post(`http://localhost:5000/logout`);
-    sessionStorage.removeItem("user");
-    // navigate("/login");
+    try {
+      await axios.post('http://localhost:5000/api/v1/auth/logout', {}, { withCredentials: true });
+      sessionStorage.removeItem("user");
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
-verify();
-//   return (
-//     <Modal isOpen={true} >
-//       <h2 className="text-xl font-semibold mb-4">Hello from QP2P</h2>
-//       <p className="text-gray-600 mb-4">Are you sure u want to Log Out ?</p>
-//       <button
-//         onClick={() => {
-//           verify(), setIsModalOpen(false), navigate("/login");
-//         }}
-//         className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-//       >
-//         Log out
-//       </button>
-//     </Modal>
-//   );
+  verify();
+   return <Navigate to="/login" replace />;
 }
 
 export default LogOut;
