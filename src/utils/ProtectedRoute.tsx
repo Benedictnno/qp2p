@@ -17,8 +17,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, [user]);
 
   // Debugging logs (optional, remove in production)
-  console.log("Saved User:", savedUser);
-  console.log("User:", user);
 
   // Redirect logic
   if (!savedUser) {

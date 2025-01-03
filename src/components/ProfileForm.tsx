@@ -1,14 +1,44 @@
 import React, { useState } from "react";
 import Autocomplete from "./Autocomplete";
+import { z, ZodType } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 interface URL {
   id: number;
   url: string;
 }
 
+type FormData = {
+  businessName: string;
+  accountNumber: string;
+  accountName: string;
+  Bank: string;
+  confirmPassword: string;
+};
+
+
 const ProfileForm: React.FC = () => {
   const [urls, setUrls] = useState<URL[]>([]);
   const [newUrl, setNewUrl] = useState("");
+ const schema: ZodType<FormData> = z
+    .object({
+      businessName: z.string().min(2).max(30),
+      accountNumber: z.string().min(2).max(20),
+      accountName: z.string().min(2),
+      Bank: z.string().min(3),
+      confirmPassword: z.string().min(6).max(15),
+    })
+    
+
+    
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
   const handleAddUrl = () => {
     if (newUrl.trim() !== "") {
@@ -21,6 +51,23 @@ const ProfileForm: React.FC = () => {
     setUrls(urls.filter((url) => url.id !== id));
   };
 
+    const submitData = (data: FormData) => {
+  //  dispatch(LoginUser({ email: data.email, password: data.password }));
+    console.log("Submitted data:");
+    
+    // if (error === "Unauthorized") {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Uh oh! Something went wrong.",
+    //     description: "incorrect email or password",
+    //     action: <ToastAction altText="Try again">Try again</ToastAction>,
+    //   });
+    // }
+    // if (success) {
+    //   navigate("/");
+    // }
+  };
+
   return (
     <form className="p-6">
       {/* Username */}
@@ -29,31 +76,42 @@ const ProfileForm: React.FC = () => {
         <input
           type="text"
           className="w-full border rounded-md px-3 py-2"
-          placeholder="Enter username"
+          id="businessName"
+           {...register("businessName")}
+          placeholder="Enter Business Name"
         />
+        <p>{errors?.businessName?.message}</p>
       </div>
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Account Number</label>
         <input
           required
+           id="accountNumber"
+           {...register("accountNumber")}
           minLength={11}
           maxLength={11}
           type="number"
           className="w-full border rounded-md px-3 py-2"
-          placeholder="Enter username"
+          placeholder="Account Number"
         />
+        <p>{errors?.accountNumber?.message}</p>
+
       </div>
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Account Name</label>
         <p>Name that matches the Bank account</p>
         <input
           required
+           id="accountName"
+           {...register("accountName")}
           minLength={11}
           maxLength={11}
-          type="number"
+          type="text"
           className="w-full border rounded-md px-3 py-2"
           placeholder="Enter username"
         />
+        <p>{errors?.accountName?.message}</p>
+
       </div>
 
       {/* Email */}
@@ -109,6 +167,7 @@ const ProfileForm: React.FC = () => {
       <button
         type="submit"
         className="w-full py-2 bg-green-500 text-white rounded-md"
+         onClick={handleSubmit(submitData)}
       >
         Save
       </button>

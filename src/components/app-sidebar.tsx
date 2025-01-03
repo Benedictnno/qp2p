@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/sidebar"
 import LogOut from "@/utils/LogOut"
 
+
 // This is sample data.
 const data = {
   navMain: [
-   
     {
       title: "Control Panel",
       url: "#",
@@ -29,7 +29,7 @@ const data = {
         },
         {
           title: "Transaction History",
-          url: "/user/transactions",
+          url: "transactions",
           isActive: true,
         },
         {
@@ -37,14 +37,14 @@ const data = {
           url: "profile",
         },
         {
-          title: "Caching",
-          url: "#",
+          title: "Fund Account",
+          url: "fund-wallet",
         },
         {
           title: "Styling",
           url: "#",
         },
-       
+
         {
           title: "Testing",
           url: "#",
@@ -77,15 +77,22 @@ const data = {
         },
         {
           title: "LogOut",
-          url: "login"
-         
-        }
+          url: "login",
+        },
       ],
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // const {user, success,error} = useSelector((state: RootState) => state.login);
+ const sessionUser = sessionStorage.getItem("user");
+
+   const user = sessionUser ? JSON.parse(sessionUser) : null;
+   const firstName = user?.user?.firstName || "Guest";
+   const lastName = user?.user?.lastName || "";
+
+   
   return (
     <Sidebar variant="floating" {...props}>
       <SidebarHeader>
@@ -97,8 +104,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
+                  <span className="font-semibold">Welcome </span>
+                  <span className="">{firstName} {lastName}</span>
                 </div>
               </a>
             </SidebarMenuButton>

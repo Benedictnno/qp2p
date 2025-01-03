@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 import TransactionHistory from "./pages/TransactionHistory.tsx";
 import VerificationPage from "./pages/VerificationPage.tsx";
+import FundWallet from "./pages/FundWallet.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,8 +26,9 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       { index: true, element: <Dashboard /> }, // Default child route
-      { path: "/user/transactions", element: <TransactionHistory /> }, // Default child route
+      { path: "transactions", element: <TransactionHistory /> }, // Default child route
       { path: "profile", element: <UserDetailsPage /> }, // Other child routes
+      { path: "fund-wallet", element: <FundWallet /> }, // Other child routes
     ],
   },
   {
