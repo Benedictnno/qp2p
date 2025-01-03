@@ -33,8 +33,8 @@ const data = {
           isActive: true,
         },
         {
-          title: "Rendering",
-          url: "#",
+          title: "Profile Details",
+          url: "profile",
         },
         {
           title: "Caching",

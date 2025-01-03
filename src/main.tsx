@@ -11,6 +11,7 @@ import { store } from "./States/store.tsx";
 import ProtectedRoute from "./utils/ProtectedRoute.tsx";
 import PublicRoute from "./utils/PublicRoute.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 import TransactionHistory from "./pages/TransactionHistory.tsx";
 import VerificationPage from "./pages/VerificationPage.tsx";
 const router = createBrowserRouter([
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> }, // Default child route
       { path: "/user/transactions", element: <TransactionHistory /> }, // Default child route
-      // { path: "profile", element: <Profile /> }, // Other child routes
+      { path: "profile", element: <UserDetailsPage /> }, // Other child routes
     ],
   },
   {
