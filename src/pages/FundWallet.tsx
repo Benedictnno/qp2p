@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "@/States/store";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 type FormData = {
@@ -39,7 +38,6 @@ type PayStack = {
 
 type PhoneAmountType = {
   phone: string;
-
   amount: number;
 };
 
@@ -77,11 +75,11 @@ function FundWallet() {
     className: style.button,
     children: "Pay Now",
     email: user.email,
-    amount: PhoneAmount.amount * 100,
-    Phone: PhoneAmount.phone,
+    amount:1000 * 100,
+    Phone:"345678996378490",
     metadata: {
       name: user.name,
-      Phone: PhoneAmount.phone,
+      Phone:"345678996378490",
       custom_fields: [
         {
           display_name: "Phone Number",
@@ -98,7 +96,7 @@ function FundWallet() {
 
   const payment = async (amount: number) => {
     await axios.post("http://localhost:5000/api/v1/fiat/fund", {
-      amt: amount,
+      amt: 10000,
       user: user.id,
       email: user.email,
       name: user.name,
@@ -106,9 +104,13 @@ function FundWallet() {
       quantity: amount,
     });
   };
-
+ 
   const submitData = (data: FormData) => {
-    setPhoneAmount(data);
+    console.log('====================================');
+    console.log(data);
+    console.log(PhoneAmount);
+    console.log('====================================');
+    // setPhoneAmount(data);
   };
 
   return (
@@ -149,19 +151,15 @@ function FundWallet() {
           {...register("amount")}
           minLength={11}
           maxLength={11}
-          type="number"
+          type="number" 
+          // value={PhoneAmount.amount}
           className="w-full border rounded-md px-3 py-2"
-          placeholder="Account Number"
+          placeholder="Enter Account Number"
         />
         <p>{errors?.amount?.message}</p>
       </div>
-      <button
-        type="submit"
-        
-        onClick={handleSubmit(submitData)}
-      >
-
-      <PaystackButton {...componentProps}/>
+      <button type="submit" onClick={handleSubmit(submitData)}>
+        <PaystackButton {...componentProps} />
       </button>
     </form>
   );

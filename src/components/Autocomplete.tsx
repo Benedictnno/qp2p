@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const frameworks = ["Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"];
 
-const Autocomplete: React.FC = () => {
+const Autocomplete: React.FC<{ setBank:(query:string)=>void }> = ({ setBank }) => {
   const [query, setQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState(frameworks);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -11,6 +11,7 @@ const Autocomplete: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+    
     setFilteredSuggestions(
       frameworks.filter((framework) =>
         framework.toLowerCase().includes(value.toLowerCase())
@@ -39,6 +40,7 @@ const Autocomplete: React.FC = () => {
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
+   setBank(suggestion);
     setIsDropdownOpen(false);
   };
 

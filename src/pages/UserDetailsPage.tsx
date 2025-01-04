@@ -1,12 +1,28 @@
 import React, { useState } from "react";
 import ProfileForm from "../components/ProfileForm";
+import { Button } from "@/components/ui/button";
 
 const App: React.FC = () => {
-  const tabs = ["Profile", "Set Token Sell Rate", "Your Link", "Notifications", "Display"];
+  const tabs = [
+    "Profile",
+    "Set Token Sell Rate",
+    "Your Link",
+   
+  ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
-const sessionUser = sessionStorage.getItem("user");
+  const [copied, setCopied] = useState<boolean>(false);
+  const sessionUser = sessionStorage.getItem("user");
   const { user } = sessionUser ? JSON.parse(sessionUser) : null;
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    });
+  };
+
+
+  
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center">
       <div className="w-full max-w-3xl bg-white shadow-md rounded-lg">
@@ -31,7 +47,13 @@ const sessionUser = sessionStorage.getItem("user");
           {activeTab === "Set Token Sell Rate" && (
             <SetTokenRate label="Account Field" />
           )}
-          {activeTab === "Your Link" && <YourLink userId={user.id} />}
+          {activeTab === "Your Link" && (
+            <YourLink
+              userId={user.id}
+              handleCopy={handleCopy}
+              copied={copied}
+            />
+          )}
           {activeTab === "Notifications" && (
             <DemoFormField label="Notifications Field" />
           )}
@@ -47,39 +69,57 @@ const DemoFormField: React.FC<{ label: string }> = ({ label }) => (
     <label className="block text-sm font-medium mb-2">{label}</label>
     <input
       type="text"
-      
       className="w-full border rounded-md px-3 py-2"
       placeholder={`Enter ${label.toLowerCase()}`}
     />
   </div>
 );
 
-const YourLink: React.FC<{ userId: string }> = ({ userId }) => (
+const YourLink: React.FC<{
+  userId: string;
+  handleCopy: (text: string) => void;
+  copied: boolean;
+}> = ({ userId, handleCopy, copied }) => (
   <div>
     <label className="block text-sm font-medium mb-2">Access Link</label>
     <input
       type="text"
       className="w-full border rounded-md px-3 py-2"
+      readOnly
       value={`http://localhost:5174/profiles/${userId}`}
       placeholder={`Enter`}
     />
+    <Button
+      variant="outline"
+      className="w-10/12 self-center"
+      onClick={() => handleCopy(`http://localhost:5174/profiles/${userId}`)}
+    >
+      <span>{copied ? "Copied!" : "Copy"}</span>
+    </Button>
   </div>
 );
 const SetTokenRate: React.FC<{ label: string }> = ({ label }) => (
   <div>
-    <label className="block text-sm font-medium mb-2"> Set Ton Price (per 1 Token)</label>
+    <label className="block text-sm font-medium mb-2">
+      {" "}
+      Set Ton Price (per 1 Token)
+    </label>
     <input
       type="text"
       className="w-full border rounded-md px-3 py-2"
       placeholder={`Enter ${label.toLowerCase()}`}
     />
-    <label className="block text-sm font-medium mb-2">Set Usdt Price (per 1 Token)</label>
+    <label className="block text-sm font-medium mb-2">
+      Set Usdt Price (per 1 Token)
+    </label>
     <input
       type="text"
       className="w-full border rounded-md px-3 py-2"
       placeholder={`Enter ${label.toLowerCase()}`}
     />
-    <label className="block text-sm font-medium mb-2">Set Solana Price (per 1 Token)</label>
+    <label className="block text-sm font-medium mb-2">
+      Set Solana Price (per 1 Token)
+    </label>
     <input
       type="text"
       className="w-full border rounded-md px-3 py-2"

@@ -11,9 +11,6 @@ export const userBalances = createAsyncThunk(
   withCredentials: true,
 }
       );
-console.log('====================================');
-console.log(response);
-console.log('====================================');
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");

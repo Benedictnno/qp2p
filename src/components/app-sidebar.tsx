@@ -40,31 +40,6 @@ const data = {
           title: "Fund Account",
           url: "fund-wallet",
         },
-        {
-          title: "Styling",
-          url: "#",
-        },
-
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
       ],
     },
     {

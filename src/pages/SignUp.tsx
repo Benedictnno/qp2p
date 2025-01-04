@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "@/States/thunks/auth";
 import { AppDispatch, RootState } from "@/States/store";
-import Modal from '@/utils/Model';
+import Modal from "@/utils/Model";
 
 type FormData = {
   firstName: string;
@@ -41,7 +41,7 @@ export function SignUp() {
     });
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     register,
@@ -52,19 +52,27 @@ const [isModalOpen, setIsModalOpen] = useState(false);
   });
 
   const submitData = (data: FormData) => {
-    dispatch(RegisterUser({ email: data.email, password: data.password , lastName:data.lastName,firstName:data.firstName}));
+    dispatch(
+      RegisterUser({
+        email: data.email,
+        password: data.password,
+        lastName: data.lastName,
+        firstName: data.firstName,
+      })
+    );
   };
-  
-  const { msg,error,success,loading} = useSelector((state: RootState) => state.registerUser);
 
+  const { msg, error, success, loading } = useSelector(
+    (state: RootState) => state.registerUser
+  );
 
- useEffect(() => {
-   setIsModalOpen(true);
- }, [error,success])
- 
- if (loading) {
-  return <h3>Loading...</h3>
- }
+  useEffect(() => {
+    setIsModalOpen(true);
+  }, [error, success]);
+
+  if (loading) {
+    return <h3>Loading...</h3>;
+  }
   return (
     <>
       <Card className="mx-auto max-w-sm">
@@ -150,19 +158,19 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         </CardContent>
       </Card>
       {success || error ? (
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <h2 className="text-xl font-semibold mb-4">Hello from QP2P</h2>
-            <p className="text-gray-600 mb-4">
-             {msg}
-            </p>
-            <button
-              onClick={() => {setIsModalOpen(false), navigate("/login");}}
-              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-            >
-              Return to Login Page
-            </button>
-          </Modal>
-        ) : null}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <h2 className="text-xl font-semibold mb-4">Hello from QP2P</h2>
+          <p className="text-gray-600 mb-4">{msg}</p>
+          <button
+            onClick={() => {
+              setIsModalOpen(false), navigate("/login");
+            }}
+            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+          >
+            Return to Login Page
+          </button>
+        </Modal>
+      ) : null}
     </>
   );
 }

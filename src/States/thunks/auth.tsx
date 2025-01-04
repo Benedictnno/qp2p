@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import dotenv from "dotenv";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 dotenv.config();
 
@@ -11,11 +11,12 @@ export const LoginUser = createAsyncThunk(
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/auth/login",
-        { email: login.email, password: login.password },{ withCredentials: true }
+        { email: login.email, password: login.password },
+        { withCredentials: true }
       );
-     
-     const user =  jwtDecode(response.data.refreshToken);
-     sessionStorage.setItem('user', JSON.stringify(user));
+
+      const user = jwtDecode(response.data.refreshToken);
+      sessionStorage.setItem("user", JSON.stringify(user));
 
       return user;
     } catch (error: any) {
@@ -25,14 +26,26 @@ export const LoginUser = createAsyncThunk(
 );
 export const RegisterUser = createAsyncThunk(
   "register user",
-  async (login: { email: string; password: string , firstName: string,
-  lastName: string }, { rejectWithValue }) => {
+  async (
+    login: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/auth/register",
-        { email: login.email, password: login.password,lastName:login.lastName,firstName:login.lastName },{ withCredentials: true }
+        {
+          email: login.email,
+          password: login.password,
+          lastName: login.lastName,
+          firstName: login.lastName,
+        },
+        { withCredentials: true }
       );
-     
 
       return response.data;
     } catch (error: any) {
@@ -40,7 +53,6 @@ export const RegisterUser = createAsyncThunk(
     }
   }
 );
-
 
 export type Login = {
   user: any;
@@ -50,7 +62,7 @@ export type Login = {
 };
 export type RegisterUserState = {
   email: string;
-  msg:string;
+  msg: string;
   loading: boolean;
   error: string | null | unknown;
   success: boolean;
@@ -74,7 +86,7 @@ const LoginUserSlice = createSlice({
   name: "LoginUser",
   initialState,
   reducers: {},
-  extraReducers:  (builder) => {
+  extraReducers: (builder) => {
     builder
       .addCase(LoginUser.pending, (state) => {
         state.loading = true;
@@ -83,9 +95,8 @@ const LoginUserSlice = createSlice({
       })
       .addCase(LoginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload
+        state.user = action.payload;
         state.success = true;
-
       })
       .addCase(LoginUser.rejected, (state, action) => {
         state.loading = false;
@@ -95,9 +106,9 @@ const LoginUserSlice = createSlice({
 });
 const RegisterUserSlice = createSlice({
   name: "Register User",
- initialState: RegisterUserState,
+  initialState: RegisterUserState,
   reducers: {},
-  extraReducers:  (builder) => {
+  extraReducers: (builder) => {
     builder
       .addCase(RegisterUser.pending, (state) => {
         state.loading = true;
@@ -106,21 +117,19 @@ const RegisterUserSlice = createSlice({
       })
       .addCase(RegisterUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.email = action.payload.email
-        state.msg = action.payload.message
+        state.email = action.payload.email;
+        state.msg = action.payload.message;
         state.success = true;
-
       })
       .addCase(RegisterUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.msg = action?.payload?.message
-
+        state.msg = action.payload?.message;
       });
   },
 });
 
-export  const reducers = {
+export const reducers = {
   loginUser: LoginUserSlice.reducer,
   registerUser: RegisterUserSlice.reducer,
 };
