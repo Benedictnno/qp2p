@@ -14,6 +14,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import LogOut from "@/utils/LogOut"
+import { Link } from "react-router-dom";
 
 
 // This is sample data.
@@ -103,11 +104,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton asChild isActive={item.isActive}>
                           {item.title === "LogOut" ? (
-                            <a href={item.url} onClick={()=>LogOut()}>
+                            <Link to={item.url} onClick={()=>LogOut()}>
                               {item.title}
-                            </a>
+                            </Link>
                           ) : (
-                            <a href={item.url}>{item.title}</a>
+                            <Link to={item.url}>{item.title}</Link>
                           )}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

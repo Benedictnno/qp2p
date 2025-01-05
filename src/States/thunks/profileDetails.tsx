@@ -1,14 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+ 
 export const ProfilesDetails = createAsyncThunk(
   "Profiles Details",
   async (
     profilesDetails: {
-      email: string;
+      businessName: string;
       accountName: string;
       accountNumber: string;
       bankName: string;
+      tonRate: string;
+      usdtRate: string;
     },
     { rejectWithValue }
   ) => {
@@ -16,10 +19,13 @@ export const ProfilesDetails = createAsyncThunk(
       const response = await axios.post(
         "http://localhost:5000/api/v1/user/details",
         {
-          email: profilesDetails.email,
-          businessName: profilesDetails.accountName,
+          
+          businessName: profilesDetails.businessName,
+          accountName: profilesDetails.accountName,
           accountNumber: profilesDetails.accountNumber,
           bankName: profilesDetails.bankName,
+          tonRate: Number(profilesDetails.tonRate),
+          usdtRate: Number(profilesDetails.usdtRate),
         },
         {
           withCredentials: true,
@@ -67,8 +73,6 @@ const ProfilesDetailsSlice = createSlice({
       })
       .addCase(ProfilesDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.businessName = action.payload?.data.businessName;
-        state.accountNumber = action.payload?.data.accountNumber;
         state.success = true;
       })
       .addCase(ProfilesDetails.rejected, (state, action) => {

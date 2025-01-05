@@ -6,27 +6,35 @@ import { useForm } from "react-hook-form";
 import { AppDispatch, RootState } from "@/States/store";
 import { useDispatch, useSelector } from "react-redux";
 import { ProfilesDetails } from "@/States/thunks/profileDetails";
-
-interface URL {
-  id: number;
-  url: string;
-}
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
+// interface URL {
+//   id: number;
+//   url: string;
+// }
 
 type FormData = {
   businessName: string;
   accountNumber: string;
   accountName: string;
+  usdt: string;
+  ton: string;
+  solana: string;
   // Bank: string;
 };
 
 const ProfileForm: React.FC = () => {
-  const [urls, setUrls] = useState<URL[]>([]);
-  const [newUrl, setNewUrl] = useState<string>("");
+  // const [urls, setUrls] = useState<URL[]>([]);
+  // const [newUrl, setNewUrl] = useState<string>("");
   const [Bank, setBank] = useState("");
   const schema: ZodType<FormData> = z.object({
     businessName: z.string().min(2).max(30),
     accountNumber: z.string().min(2).max(20),
     accountName: z.string().min(2),
+    usdt: z.string().min(2),
+    ton: z.string().min(2),
+    solana: z.string().min(2),
     // Bank: z.string().min(3),
   });
   const dispatch: AppDispatch = useDispatch();
@@ -39,84 +47,143 @@ const ProfileForm: React.FC = () => {
     resolver: zodResolver(schema),
   });
 
-  const handleAddUrl = () => {
-    if (newUrl.trim() !== "") {
-      setUrls([...urls, { id: Date.now(), url: newUrl }]);
-      setNewUrl("");
+  // const handleAddUrl = () => {
+  //   if (newUrl.trim() !== "") {
+  //     setUrls([...urls, { id: Date.now(), url: newUrl }]);
+  //     setNewUrl("");
+  //   }
+  // };
+
+  // const handleRemoveUrl = (id: number) => {
+  //   setUrls(urls.filter((url) => url.id !== id));
+  // };
+  const { success, error } = useSelector(
+    (state: RootState) => state.profileDetails
+  );
+ const { toast } = useToast();
+
+  const submitData = (data: FormData) => {
+    dispatch(
+      ProfilesDetails({
+        businessName: data.businessName,
+        accountName: data.accountName,
+        accountNumber: data.accountNumber,
+        bankName: Bank,
+        tonRate: data.ton,
+        usdtRate: data.usdt,
+      })
+    );
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "ERROR , go through the form before submitting",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
+    if (success) {
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Your Details has ben successfully saved",
+        action: <ToastAction altText="Try again">Done</ToastAction>,
+      });
     }
   };
 
-  const handleRemoveUrl = (id: number) => {
-    setUrls(urls.filter((url) => url.id !== id));
-  };
-
-  const submitData = (data: FormData) => {
-    // dispatch(
-    //   ProfilesDetails({
-    //     email: data.businessName,
-    //     accountName: data.accountName,
-    //     accountNumber: data.accountNumber,
-    //     bankName: data.Bank,
-    //   })
-    // );
-    console.log(data);
-    console.log(Bank);
-  };
-
   return (
-    <form className="p-6">
-      {/* Username */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Business Name</label>
-        <input
-          type="text"
-          className="w-full border rounded-md px-3 py-2"
-          id="businessName"
-          {...register("businessName")}
-          placeholder="Enter Business Name"
-        />
-        <p>{errors?.businessName?.message}</p>
-      </div>
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Account Number</label>
-        <input
-          required
-          id="accountNumber"
-          {...register("accountNumber")}
-          minLength={11}
-          maxLength={11}
-          type="number"
-          className="w-full border rounded-md px-3 py-2"
-          placeholder="Account Number"
-        />
-        <p>{errors?.accountNumber?.message}</p>
-      </div>
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Account Name</label>
-        <p>Name that matches the Bank account</p>
-        <input
-          required
-          id="accountName"
-          {...register("accountName")}
-          minLength={11}
-          maxLength={11}
-          type="text"
-          className="w-full border rounded-md px-3 py-2"
-          placeholder="Enter username"
-        />
-        <p>{errors?.accountName?.message}</p>
-      </div>
-
-      {/* Email */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Select Bank</label>
-        <div className="">
-          <Autocomplete setBank={setBank} />
+    <>
+      <form className="p-6">
+        {/* Username */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">
+            Business Name
+          </label>
+          <input
+            type="text"
+            className="w-full border rounded-md px-3 py-2"
+            id="businessName"
+            {...register("businessName")}
+            placeholder="Enter Business Name"
+          />
+          <p>{errors?.businessName?.message}</p>
         </div>
-      </div>
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">
+            Account Number
+          </label>
+          <input
+            required
+            id="accountNumber"
+            {...register("accountNumber")}
+            minLength={11}
+            maxLength={11}
+            type="number"
+            className="w-full border rounded-md px-3 py-2"
+            placeholder="Account Number"
+          />
+          <p>{errors?.accountNumber?.message}</p>
+        </div>
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Account Name</label>
+          <p>Name that matches the Bank account</p>
+          <input
+            required
+            id="accountName"
+            {...register("accountName")}
+            minLength={11}
+            maxLength={11}
+            type="text"
+            className="w-full border rounded-md px-3 py-2"
+            placeholder="Enter username"
+          />
+          <p>{errors?.accountName?.message}</p>
+        </div>
 
-      {/* Bio */}
-      {/* <div className="mb-6">
+        {/* Email */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Select Bank</label>
+          <div className="">
+            <Autocomplete setBank={setBank} />
+          </div>
+        </div>
+
+        {/* set token price */}
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">
+            {" "}
+            Set Ton Price (per 1 Token)
+          </label>
+          <input
+            type="number"
+            className="w-full border rounded-md px-3 py-2"
+            {...register("ton")}
+            placeholder={`Enter token price`}
+          />
+          <p>{errors?.ton?.message}</p>
+
+          <label className="block text-sm font-medium mb-2">
+            Set Usdt Price (per 1 Token)
+          </label>
+          <input
+            type="number"
+            className="w-full border rounded-md px-3 py-2"
+            {...register("usdt")}
+            placeholder={`Enter token price`}
+          />
+          <label className="block text-sm font-medium mb-2">
+            Set Solana Price (per 1 Token)
+          </label>
+          <input
+            type="number"
+            className="w-full border rounded-md px-3 py-2"
+            {...register("solana")}
+            placeholder={`Enter token price`}
+          />
+        </div>
+        {/* Bio */}
+        {/* <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Bio</label>
         <textarea
           className="w-full border rounded-md px-3 py-2"
@@ -157,14 +224,18 @@ const ProfileForm: React.FC = () => {
         </div>
       </div> */}
 
-      <button
-        type="submit"
-        className="w-full py-2 bg-green-500 text-white rounded-md"
-        onClick={handleSubmit(submitData)}
-      >
-        Save
-      </button>
-    </form>
+        <button
+          type="submit"
+          className="w-full py-2 bg-green-500 text-white rounded-md"
+          onClick={handleSubmit(submitData)}
+        >
+          Save
+        </button>
+      </form>
+
+          {(error || success) && <Toaster />}
+      
+    </>
   );
 };
 

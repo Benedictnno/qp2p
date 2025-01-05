@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
-  const { fiatBalance,
-  tonBalance } = useSelector((state: RootState) => state.userBalances);
+  const { fiatBalance,tonBalance } = useSelector((state: RootState) => state.userBalances);
 
   const handleCopy = () => {
     navigator.clipboard
