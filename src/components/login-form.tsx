@@ -19,14 +19,15 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster";
-
+import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import { useState } from "react";
 type FormData = {
   email: string;
   password: string;
 };
 
 export function LoginForm() {
-  
+  const [visible , setVisible] = useState(false)
   const schema: ZodType<FormData> = z.object({
     email: z.string().email(),
     password: z.string().min(6).max(15),
@@ -84,17 +85,30 @@ export function LoginForm() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link to="#" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
-                </Link>
+                {visible ? (
+                  <FaRegEyeSlash
+                    size={20}
+                    className="ml-auto inline-block text-sm underline  cursor-pointer"
+                    onClick={() => setVisible(false)}
+                  />
+                ) : (
+                  <FaRegEye
+                    size={20}
+                    className="ml-auto inline-block text-sm underline  cursor-pointer"
+                    onClick={() => setVisible(true)}
+                  />
+                )}
               </div>
               <Input
                 id="password"
-                type="password"
+                type={visible?"text":"password"}
                 required
                 {...register("password")}
               />
             </div>
+            <Link to="#" className="ml-auto inline-block text-sm underline">
+              Forgot your password?
+            </Link>
             <Button
               type="submit"
               className="w-full"
@@ -102,7 +116,6 @@ export function LoginForm() {
             >
               Login
             </Button>
-           
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
@@ -112,7 +125,7 @@ export function LoginForm() {
           </div>
         </form>
       </CardContent>
-    {error === "Unauthorized" && <Toaster />}
+      {error === "Unauthorized" && <Toaster />}
     </Card>
   );
 }

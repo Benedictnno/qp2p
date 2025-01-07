@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "@/States/thunks/auth";
 import { AppDispatch, RootState } from "@/States/store";
 import Modal from "@/utils/Model";
+import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 
 type FormData = {
   firstName: string;
@@ -42,7 +43,7 @@ export function SignUp() {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+const [visible , setVisible] = useState(false)
   const {
     register,
     handleSubmit,
@@ -117,38 +118,68 @@ export function SignUp() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
+
+                {visible ? (
+                  <FaRegEyeSlash
+                    size={20}
+                    className="ml-auto inline-block text-sm underline  cursor-pointer"
+                    onClick={() => setVisible(false)}
+                  />
+                ) : (
+                  <FaRegEye
+                    size={20}
+                    className="ml-auto inline-block text-sm underline  cursor-pointer"
+                    onClick={() => setVisible(true)}
+                  />
+                )}
               </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                {...register("password")}
-              />
             </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="confirmPassword"> Confirm Password</Label>
-              </div>
-              <Input
-                id="confirmPassword"
-                type="password"
-                required
-                {...register("confirmPassword")}
-              />
-              {errors.confirmPassword ? (
-                <p> {errors.confirmPassword.message} </p>
+            <Input
+              id="password"
+              type={visible ? "text" : "password"}
+              required
+              {...register("password")}
+            />
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center my-2">
+              <Label htmlFor="confirmPassword"> Confirm Password</Label>
+              {visible ? (
+                <FaRegEyeSlash
+                  size={20}
+                  className="ml-auto inline-block text-sm underline  cursor-pointer"
+                  onClick={() => setVisible(false)}
+                />
               ) : (
-                " "
+                <FaRegEye
+                  size={20}
+                  className="ml-auto inline-block text-sm underline  cursor-pointer"
+                  onClick={() => setVisible(true)}
+                />
               )}
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              onClick={handleSubmit(submitData)}
-            >
-              Sign Up
-            </Button>
-          </div>
+            </div>
+            <Input
+              id="confirmPassword"
+              type={visible ? "text" : "password"}
+              required
+              {...register("confirmPassword")}
+              className="my-2"
+            />
+            {errors.confirmPassword ? (
+              <p> {errors.confirmPassword.message} </p>
+            ) : (
+              " "
+            )}
+         
+          <Button
+            type="submit"
+            className="w-full"
+            onClick={handleSubmit(submitData)}
+          >
+            Sign Up
+          </Button>
+
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link to="/login" className="underline">

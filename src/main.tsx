@@ -15,6 +15,7 @@ import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 import TransactionHistory from "./pages/TransactionHistory.tsx";
 import VerificationPage from "./pages/VerificationPage.tsx";
 import FundWallet from "./pages/FundWallet.tsx";
+import { SetUpDetails } from "./pages/setUpDetailsPage.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
       { path: "fund-wallet", element: <FundWallet /> }, // Other child routes
     ],
   },
+  { path: "/set-up-details", element:
+      <ProtectedRoute>
+        <SetUpDetails />
+      </ProtectedRoute>
+   }, // Default child route
   {
     path: "/login",
     element: (

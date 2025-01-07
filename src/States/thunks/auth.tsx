@@ -16,7 +16,7 @@ export const LoginUser = createAsyncThunk(
       );
 
       const user = jwtDecode(response.data.refreshToken);
-      sessionStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
 
       return user;
     } catch (error: any) {
@@ -46,6 +46,8 @@ export const RegisterUser = createAsyncThunk(
         },
         { withCredentials: true }
       );
+ const user = jwtDecode(response.data.refreshToken);
+ localStorage.setItem("user", JSON.stringify(user));
 
       return response.data;
     } catch (error: any) {

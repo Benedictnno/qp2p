@@ -17,8 +17,8 @@ function VerificationPage() {
     <div className="flex flex-col justify-center text-center items-center h-screen">
       <h1>Welcome to QP2P</h1>
       <h2>Your Email has been successfully Verified</h2>
-      <button >
-        <Link to={"/login"}>Go back to login page</Link>
+      <button>
+        <Link to={"/set-up-details"}>Click to set Up Your Account</Link>
       </button>
     </div>
   );
