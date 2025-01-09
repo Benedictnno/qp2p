@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Autocomplete from "./Autocomplete";
+import React, { useEffect, useState } from "react";
+
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -9,68 +9,101 @@ import { ProfilesDetails } from "@/States/thunks/profileDetails";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
+import axios from "axios";
 // interface URL {
 //   id: number;
 //   url: string;
 // }
 
-type FormData = {
-  businessName: string;
-  accountNumber: string;
-  accountName: string;
-  usdt: string;
-  ton: string;
-  solana: string;
-  // Bank: string;
-};
+// interface FormData {
+//   businessName: string;
+//   accountNumber: Number;
+//   accountName: string;
+//   usdt: Number;
+//   ton: Number;
+//   bankName: string;
+//   solana: Number;
+// }
+
 
 const ProfileForm: React.FC = () => {
   // const [urls, setUrls] = useState<URL[]>([]);
   // const [newUrl, setNewUrl] = useState<string>("");
-  const [Bank, setBank] = useState("");
-  const schema: ZodType<FormData> = z.object({
-    businessName: z.string().min(2).max(30),
-    accountNumber: z.string().min(2).max(20),
-    accountName: z.string().min(2),
-    usdt: z.string().min(2),
-    ton: z.string().min(2),
-    solana: z.string().min(2),
-    // Bank: z.string().min(3),
+  
+  
+  const formSchema = z.object({
+    businessName: z.string().default(""),
+    accountNumber: z.number().default(0),
+    accountName: z.string().default(""),
+    bankName: z.string().default(""),
+    bio: z.string().default(""),
+    usdt: z.number().default(0),
+    ton: z.number().default(0),
+    solana: z.number().default(0),
   });
+  type FormData = z.infer<typeof formSchema>;
   const dispatch: AppDispatch = useDispatch();
+const [formData, setFormData] = useState<FormData>(formSchema.parse({}));
+  const [isLoading, setIsLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+
+  // Fetch default values from the API
+  useEffect(() => {
+    const fetchDefaults = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v1/user/full-details",
+          {
+            withCredentials: true,
+          }
+        ); // Replace with your API endpoint
+        const defaultData = formSchema.parse(response.data.userDetails); // Validate the data with Zod
+         setFormData(defaultData);
+      } catch (error) {
+        console.error("Error fetching default values:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDefaults();
+  }, []);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
   });
 
-  // const handleAddUrl = () => {
-  //   if (newUrl.trim() !== "") {
-  //     setUrls([...urls, { id: Date.now(), url: newUrl }]);
-  //     setNewUrl("");
-  //   }
-  // };
-
-  // const handleRemoveUrl = (id: number) => {
-  //   setUrls(urls.filter((url) => url.id !== id));
-  // };
   const { success, error } = useSelector(
     (state: RootState) => state.profileDetails
   );
- const { toast } = useToast();
+  const { toast } = useToast();
+
+const handleChange = (
+  event: React.ChangeEvent<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >
+) => {
+  const { name, value } = event.target;
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+};
 
   const submitData = (data: FormData) => {
     dispatch(
       ProfilesDetails({
         businessName: data.businessName,
         accountName: data.accountName,
-        accountNumber: data.accountNumber,
-        bankName: Bank,
-        tonRate: data.ton,
-        usdtRate: data.usdt,
+        bio: data.bio,
+        accountNumber: String(data.accountNumber),
+        bankName: data.bankName,
+        tonRate: String(data.ton),
+        usdtRate: String(data.usdt),
       })
     );
     if (error) {
@@ -100,11 +133,14 @@ const ProfileForm: React.FC = () => {
             Business Name
           </label>
           <input
+            readOnly={editing ? false : true}
             type="text"
             className="w-full border rounded-md px-3 py-2"
             id="businessName"
+            value={formData["businessName" as keyof FormData]}
             {...register("businessName")}
             placeholder="Enter Business Name"
+            onChange={handleChange}
           />
           <p>{errors?.businessName?.message}</p>
         </div>
@@ -114,13 +150,16 @@ const ProfileForm: React.FC = () => {
           </label>
           <input
             required
+            readOnly={editing ? false : true}
             id="accountNumber"
             {...register("accountNumber")}
             minLength={11}
             maxLength={11}
             type="number"
+            value={formData["accountNumber" as keyof FormData]}
             className="w-full border rounded-md px-3 py-2"
             placeholder="Account Number"
+            onChange={handleChange}
           />
           <p>{errors?.accountNumber?.message}</p>
         </div>
@@ -130,22 +169,37 @@ const ProfileForm: React.FC = () => {
           <input
             required
             id="accountName"
+            readOnly={editing ? false : true}
             {...register("accountName")}
             minLength={11}
             maxLength={11}
             type="text"
+            value={formData["accountName" as keyof FormData]}
             className="w-full border rounded-md px-3 py-2"
             placeholder="Enter username"
+            onChange={handleChange}
           />
           <p>{errors?.accountName?.message}</p>
         </div>
 
         {/* Email */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Select Bank</label>
-          <div className="">
-            <Autocomplete setBank={setBank} />
-          </div>
+          <label className="block text-sm font-medium mb-2">Bank's Name</label>
+          <p>Please Make sure the name of the bank is spelt correctly</p>
+          <input
+            required
+            id="bankName"
+            {...register("bankName")}
+            readOnly={editing ? false : true}
+            minLength={11}
+            maxLength={11}
+            type="text"
+            value={formData["bankName" as keyof FormData]}
+            className="w-full border rounded-md px-3 py-2"
+            placeholder="Enter bankName"
+            onChange={handleChange}
+          />
+          <p>{errors?.bankName?.message}</p>
         </div>
 
         {/* set token price */}
@@ -159,7 +213,10 @@ const ProfileForm: React.FC = () => {
             type="number"
             className="w-full border rounded-md px-3 py-2"
             {...register("ton")}
+            readOnly={editing ? false : true}
+            value={formData["ton" as keyof FormData]}
             placeholder={`Enter token price`}
+            onChange={handleChange}
           />
           <p>{errors?.ton?.message}</p>
 
@@ -170,7 +227,10 @@ const ProfileForm: React.FC = () => {
             type="number"
             className="w-full border rounded-md px-3 py-2"
             {...register("usdt")}
+            readOnly={editing ? false : true}
+            value={formData["usdt" as keyof FormData]}
             placeholder={`Enter token price`}
+            onChange={handleChange}
           />
           <label className="block text-sm font-medium mb-2">
             Set Solana Price (per 1 Token)
@@ -178,63 +238,46 @@ const ProfileForm: React.FC = () => {
           <input
             type="number"
             className="w-full border rounded-md px-3 py-2"
+            value={formData["solana" as keyof FormData]}
             {...register("solana")}
+            readOnly={editing ? false : true}
             placeholder={`Enter token price`}
+            onChange={handleChange}
           />
         </div>
         {/* Bio */}
-        {/* <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Bio</label>
-        <textarea
-          className="w-full border rounded-md px-3 py-2"
-          placeholder="Enter your bio"
-        />
-      </div>
-
-       {URLs }
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">URLs</label>
-        {urls.map((url) => (
-          <div key={url.id} className="flex items-center space-x-3 mb-2">
-            <span className="text-sm">{url.url}</span>
-            <button
-              type="button"
-              onClick={() => handleRemoveUrl(url.id)}
-              className="text-red-500 text-sm"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        <div className="flex items-center space-x-3">
-          <input
-            type="text"
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Bio</label>
+          <textarea
             className="w-full border rounded-md px-3 py-2"
-            placeholder="Add a URL"
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
+            value={formData["bio" as keyof FormData]}
+            readOnly={editing ? false : true}
+            {...register("bio")}
+            placeholder="Enter your bio"
+            onChange={handleChange}
           />
-          <button
-            type="button"
-            onClick={handleAddUrl}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          >
-            Add URL
-          </button>
-        </div>
-      </div> */}
+        </div> 
 
-        <button
-          type="submit"
-          className="w-full py-2 bg-green-500 text-white rounded-md"
-          onClick={handleSubmit(submitData)}
-        >
-          Save
-        </button>
+        {editing ? (
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-500 text-white rounded-md"
+            onClick={()=>(setEditing(false),handleSubmit(submitData))}
+          >
+            Save Edit
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-500 text-white rounded-md"
+            onClick={()=>setEditing(true)}
+          >
+            Edit Profile
+          </button>
+        )}
       </form>
 
-          {(error || success) && <Toaster />}
-      
+      {(error || success) && <Toaster />}
     </>
   );
 };

@@ -11,7 +11,7 @@ const App: React.FC = () => {
   ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
   const [copied, setCopied] = useState<boolean>(false);
-  const sessionUser = sessionStorage.getItem("user");
+  const sessionUser = localStorage.getItem("user");
   const { user } = sessionUser ? JSON.parse(sessionUser) : null;
 
   const handleCopy = (text: string) => {
