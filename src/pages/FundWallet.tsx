@@ -54,7 +54,7 @@ function FundWallet() {
     amount: z.number().min(2),
     Bank: z.string().min(3),
   });
-  const sessionUser = sessionStorage.getItem("user");
+  const sessionUser = localStorage.getItem("user");
 
   const { user } = sessionUser ? JSON.parse(sessionUser) : null;
 

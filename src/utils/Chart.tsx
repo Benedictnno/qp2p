@@ -8,6 +8,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useSelector } from "react-redux";
+import { RootState } from "@/States/store";
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -26,20 +28,28 @@ const chartData = [
 ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  Received: {
+    label: "Received",
     color: "#2563eb",
   },
-  mobile: {
-    label: "Mobile",
+  sent: {
+    label: "sent",
     color: "#60a5fa",
   },
 } satisfies ChartConfig;
 
 export function Chart() {
+  const {
+    chartData,
+    error,
+    success,
+    loading,
+  } = useSelector((state: RootState) => state.transactions);
+  console.log( chartData);
+  
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
+      <BarChart accessibilityLayer data={ chartData}>
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="month"
@@ -50,8 +60,8 @@ export function Chart() {
         />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="Received" fill="var(--color-desktop)" radius={4} />
+        <Bar dataKey="sent" fill="var(--color-mobile)" radius={4} />
       </BarChart>
     </ChartContainer>
   );

@@ -17,7 +17,6 @@ const formattedDate = date.toTimeString();
 //   timeZoneName: "short"
 // });
 
-console.log(formattedDate);
 
   return formattedDate
   }

@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 const App: React.FC = () => {
   const tabs = [
-    "Profile Display",
     "Profile",
+    "Wallet Profile",
     "Your Link",
    
   ];

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/States/store";
 import { userBalances } from "@/States/thunks/balance";
 import { Link } from "react-router-dom";
+import { transactions } from "@/States/thunks/transactions";
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
@@ -25,6 +26,15 @@ const Dashboard = () => {
     dispatch(userBalances());
     //  }, 5000);
 
+     const fetchData = async () => {
+          try {
+            dispatch(transactions());
+          } catch (error) {
+            console.error("Error in fetchData:", error);
+          }
+        };
+    
+        fetchData();
     // return () => clearTimeout(timeout);
   }, []);
   const dashBoardCardStyle =

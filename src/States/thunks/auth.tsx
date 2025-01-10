@@ -122,11 +122,13 @@ const RegisterUserSlice = createSlice({
         state.email = action.payload.email;
         state.msg = action.payload.message;
         state.success = true;
+       
       })
       .addCase(RegisterUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.msg = action.payload?.message;
+        state.msg = action.payload?.data?.message;
+        state.success = false;
       });
   },
 });

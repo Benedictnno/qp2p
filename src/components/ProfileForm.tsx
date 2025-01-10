@@ -258,9 +258,10 @@ const handleChange = (
           />
         </div> 
 
+      </form>
         {editing ? (
           <button
-            type="submit"
+           
             className="w-full py-2 bg-green-500 text-white rounded-md"
             onClick={()=>(setEditing(false),handleSubmit(submitData))}
           >
@@ -268,14 +269,13 @@ const handleChange = (
           </button>
         ) : (
           <button
-            type="submit"
+          type="button"
             className="w-full py-2 bg-green-500 text-white rounded-md"
             onClick={()=>setEditing(true)}
           >
             Edit Profile
           </button>
         )}
-      </form>
 
       {(error || success) && <Toaster />}
     </>
