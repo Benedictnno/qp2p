@@ -6,14 +6,15 @@ import { AppDispatch, RootState } from "@/States/store";
 import { userBalances } from "@/States/thunks/balance";
 import { Link } from "react-router-dom";
 import { transactions } from "@/States/thunks/transactions";
+import { TonAddress } from "@/States/thunks/CryptoDetails";
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
   const { fiatBalance,tonBalance } = useSelector((state: RootState) => state.userBalances);
 
-  const handleCopy = () => {
+  const handleCopy = (text:string) => {
     navigator.clipboard
-      .writeText("iuygvbnmlughbnm,.mnsskjjjjjjsssssssssssss")
+      .writeText(text)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
@@ -24,10 +25,12 @@ const Dashboard = () => {
   useEffect(() => {
       //  const timeout = setTimeout(() => {
     dispatch(userBalances());
+    dispatch(TonAddress());
     //  }, 5000);
 
      const fetchData = async () => {
           try {
+
             dispatch(transactions());
           } catch (error) {
             console.error("Error in fetchData:", error);
@@ -37,6 +40,33 @@ const Dashboard = () => {
         fetchData();
     // return () => clearTimeout(timeout);
   }, []);
+
+  const { history, error, success, loading } = useSelector(
+  (state: RootState) => state.transactions
+);
+  const { walletAddress } = useSelector(
+    (state: RootState) => state.tonAddress
+  );
+
+  
+
+  const currentDate = new Date();
+const todaysTransactions = history.filter((transaction) => {
+  const transactionDate = new Date(transaction.createdAt);
+  return (
+    transactionDate.getFullYear() === currentDate.getFullYear() &&
+    transactionDate.getMonth() === currentDate.getMonth() &&
+    transactionDate.getDate() === currentDate.getDate()
+  );
+});
+
+const sentCount = todaysTransactions.filter((t) => t.status === "sent").length;
+const receivedCount = todaysTransactions.filter((t) => t.status === "Received").length;
+console.log("todays transactions" + todaysTransactions.length);
+console.log("sent transactions" + sentCount);
+console.log("receivedCount transactions" + receivedCount);
+
+
   const dashBoardCardStyle =
     "m-3 font-[' Inter, system-ui, Avenir, Helvetica, Arial, sans-serif'] font-semibold text-center";
   return (
@@ -48,7 +78,10 @@ const Dashboard = () => {
             <h2>NGN {fiatBalance}</h2>
           </div>
           <Button variant="outline" className="w-10/12 self-center">
+          <Link to={'fund-wallet'}>
+          
             Add Funds
+          </Link>
           </Button>
         </div>
         <div className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
@@ -60,11 +93,9 @@ const Dashboard = () => {
           <Button
             variant="outline"
             className="w-10/12 self-center"
-            onClick={handleCopy}
+            onClick={()=> handleCopy(walletAddress)}
           >
-            <p className="w-20 truncate">
-              iuygvbnmlughbnm,.mnsskjjjjjjsssssssssssss
-            </p>
+            <p className="w-20 truncate">{walletAddress}</p>
             <span>{copied ? "Copied!" : "Copy"}</span>
           </Button>
         </div>
@@ -76,7 +107,7 @@ const Dashboard = () => {
           <Button
             variant="outline"
             className="w-10/12 self-center"
-            onClick={handleCopy}
+            onClick={()=>handleCopy}
           >
             <p className="w-20 truncate">
               iuygvbnmlughbnmmnsskjjjjjjsssssssssssss
@@ -84,14 +115,17 @@ const Dashboard = () => {
             <span>{copied ? "Copied!" : "Copy"}</span>
           </Button>
         </div>
-        <Link to="/user/transactions" className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
+        <Link
+          to="/user/transactions"
+          className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center"
+        >
           <div className={`${dashBoardCardStyle}`}>
-            <p>Number of fiat transactions</p>
-            <h2> 100</h2>
+            <p>Number of fiat transactions transactions Today</p>
+            <h2> {todaysTransactions.length}</h2>
           </div>
           <div className="flex justify-evenly w-full align-baseline">
-            <h3>50 sells</h3>
-            <h3>50 Buys </h3>
+            <h3>{sentCount} sells</h3>
+            <h3>{receivedCount} Buys </h3>
           </div>
         </Link>
       </div>

@@ -30,6 +30,7 @@ const router = createBrowserRouter([
       { path: "transactions", element: <TransactionHistory /> }, // Default child route
       { path: "profile", element: <UserDetailsPage /> }, // Other child routes
       { path: "fund-wallet", element: <FundWallet /> }, // Other child routes
+      { path: "/:businessName/:id", element: <FundWallet /> }, // Other child routes
     ],
   },
   { path: "/set-up-details", element:

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import ProfileForm from "../components/ProfileForm";
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/States/store";
+import WalletDetails from "@/components/walletDetails";
 
 const App: React.FC = () => {
   const tabs = [
@@ -20,7 +23,6 @@ const App: React.FC = () => {
       setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
     });
   };
-
 
   
   return (
@@ -54,26 +56,17 @@ const App: React.FC = () => {
               copied={copied}
             />
           )}
-          {activeTab === "Notifications" && (
-            <DemoFormField label="Notifications Field" />
+          {activeTab === "Wallet Profile" && (
+            <WalletDetails  />
           )}
-          {activeTab === "Display" && <DemoFormField label="Display Field" />}
+          {/* {activeTab === "Display" && <DemoFormField label="Display Field" />} */}
         </div>
       </div>
     </div>
   );
 };
 
-const DemoFormField: React.FC<{ label: string }> = ({ label }) => (
-  <div>
-    <label className="block text-sm font-medium mb-2">{label}</label>
-    <input
-      type="text"
-      className="w-full border rounded-md px-3 py-2"
-      placeholder={`Enter ${label.toLowerCase()}`}
-    />
-  </div>
-);
+
 
 const YourLink: React.FC<{
   userId: string;

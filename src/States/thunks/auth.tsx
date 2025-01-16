@@ -48,6 +48,8 @@ export const RegisterUser = createAsyncThunk(
       );
  const user = jwtDecode(response.data.refreshToken);
  localStorage.setItem("user", JSON.stringify(user));
+ localStorage.setItem("loginTime", Date.now());
+
 
       return response.data;
     } catch (error: any) {
