@@ -5,12 +5,12 @@ import axios from "axios";
 // Define the async thunk
 export const getBuyerUserData = createAsyncThunk(
   "getBuyerUserData",
-  async (profilesId, { rejectWithValue }) => {
+  async (profilesId:string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `http://localhost:5000/api/v1/user/details/${profilesId}`
       );
-      return response.data;
+      return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
@@ -18,7 +18,19 @@ export const getBuyerUserData = createAsyncThunk(
   }
 );
 
-const initialState = {
+interface BuyerUserData {
+  userData: {
+    tonRate: number;
+    usdtRate: number;
+    user: string; 
+  };
+  loading: boolean;
+  error: any;
+  success: boolean;
+}
+
+
+const initialState: BuyerUserData = {
   userData: {
     tonRate: 0,
     usdtRate: 0,
@@ -41,8 +53,11 @@ const getBuyerUserDataSlice = createSlice({
         state.success = false;
       })
       .addCase(getBuyerUserData.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userData = action.payload;
+        
+        
+        state.loading = false;     
+        state.userData = action.payload.data.user;
+
       })
       .addCase(getBuyerUserData.rejected, (state) => {
         state.loading = false;

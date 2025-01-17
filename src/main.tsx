@@ -16,6 +16,11 @@ import TransactionHistory from "./pages/TransactionHistory.tsx";
 import VerificationPage from "./pages/VerificationPage.tsx";
 import FundWallet from "./pages/FundWallet.tsx";
 import { SetUpDetails } from "./pages/setUpDetailsPage.tsx";
+import SingleProfilePage from "./pages/customersPage.tsx";
+import dotenv from "dotenv";
+dotenv.config();
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,14 +35,17 @@ const router = createBrowserRouter([
       { path: "transactions", element: <TransactionHistory /> }, // Default child route
       { path: "profile", element: <UserDetailsPage /> }, // Other child routes
       { path: "fund-wallet", element: <FundWallet /> }, // Other child routes
-      { path: "/:businessName/:id", element: <FundWallet /> }, // Other child routes
     ],
   },
-  { path: "/set-up-details", element:
+  { path: "/profile/:profilesId", element: <SingleProfilePage /> }, // Other child routes
+  {
+    path: "/set-up-details",
+    element: (
       <ProtectedRoute>
         <SetUpDetails />
       </ProtectedRoute>
-   }, // Default child route
+    ),
+  }, // Default child route
   {
     path: "/login",
     element: (

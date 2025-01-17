@@ -11,9 +11,35 @@ import {
   verifySendersWallet,
 } from "../States/thunks/verifySendersWallet";
 import { RootState, AppDispatch } from "../States/store"; // Adjust the path to match your setup
+import SellCrypto from "@/components/SellCrypto";
+
 
 
 // Define types for the form data
+
+type PayStack = {
+  children: string;
+  Phone: string;
+  amount: number;
+  email: string;
+  metadata: {
+    name: string;
+    Phone: string;
+    custom_fields: [
+      {
+        display_name: string;
+        variable_name: string;
+        value: string;
+      }
+    ];
+  };
+  publicKey: string;
+  text: string;
+  onSuccess: () => Promise<void>;
+  onClose: () => void;
+  className: string;
+};
+
 interface FormData {
   name: string;
   email: string;
@@ -23,13 +49,13 @@ interface FormData {
   crypto: string;
 }
 
-
 interface BuyerUserData {
   userData: {
     tonRate: number;
     usdtRate: number;
     user: string; // Assuming this is a vendor ID or identifier
-  },loading:boolean
+  };
+  loading: boolean;
 }
 
 interface VerifyWalletState {
@@ -42,6 +68,7 @@ interface VerifyWalletState {
 const SingleProfilePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { profilesId } = useParams();
+ 
   const dispatch: AppDispatch = useDispatch();
 
   // Environment variables
@@ -50,23 +77,22 @@ const SingleProfilePage: React.FC = () => {
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
-  // Redux selectors
+    console.log(process.env.REACT_APP_PAYSTACK_PUBLIC_KEY )
   const { userData, loading } = useSelector(
     (state: RootState) => state.getBuyerUserData as BuyerUserData
   );
   const {
     formData,
     success: verified,
-    loading: loadingVerified,
+    // loading: loadingVerified,
     error,
   } = useSelector(
     (state: RootState) => state.verifyWallet as VerifyWalletState
   );
 
   // Extract fields from formData
-  const { email, value, Phone, name, customersAddress, crypto }: FormData =
-    formData;
-
+ 
+  
   // Handle input changes with type safety
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -79,13 +105,16 @@ const SingleProfilePage: React.FC = () => {
 
   // Verify if the entered value is valid
   const verifySend = (): { msg: string; success: boolean } => {
-    if (value && +value < userData?.user?.usdtRate) {
+    if (value && +value < userData?.usdtRate) {
       return { msg: "Amount cannot be less than 1 USDT", success: false };
     }
     return { msg: "Good to go", success: true };
   };
 
-  const vendorWalletId = userData?.user?.user;
+  const { email, value, Phone, name, customersAddress, crypto }: FormData =
+    formData;
+
+  const vendorWalletId = userData?.user;
   const verifyData = { customersAddress, value: Number(value), vendorWalletId };
 
   // Fetch buyer user data on component mount
@@ -100,7 +129,7 @@ const SingleProfilePage: React.FC = () => {
     if (customersAddress && value && vendorWalletId) {
       dispatch(verifySendersWallet(verifyData));
     }
-  }, [dispatch, customersAddress, value, vendorWalletId]);
+  }, [dispatch, vendorWalletId]);
 
   // Show modal if there's an error
   useEffect(() => {
@@ -111,7 +140,7 @@ const SingleProfilePage: React.FC = () => {
 
   // Handle payment logic
   const payment = async (amount: number): Promise<void> => {
-    const quantity = amount / userData?.user?.tonRate;
+    const quantity = amount / userData?.tonRate;
 
     try {
       await axios.post(`${API_BASE_URL}/api/v1/fiat/fund`, {
@@ -133,20 +162,42 @@ const SingleProfilePage: React.FC = () => {
     }
   };
 
+  const style = {
+    input:
+      "block w-full px-4 py-2 mb-4 rounded-md border border-gray-300 focus:outline-none focus:border-primary-500",
+    button:
+      "block w-full px-4 py-2 bg-[#72bff1] rounded-lg text-[#fff] font-bold text-xl",
+  };
+
   // Paystack configuration
-  const componentProps = {
+
+  const componentProps: PayStack = {
+    className: style.button,
+    children: "Pay Now",
     email,
-    amount: Number(value) * 100, // Convert to kobo
-    metadata: { name, Phone },
+    amount: Number(value) * 100,
+    Phone,
+    metadata: {
+      name,
+      Phone,
+      custom_fields: [
+        {
+          display_name: "Phone Number",
+          variable_name: "phone",
+          value: "1234567890",
+        },
+      ],
+    },
     publicKey,
     text: "Pay Now",
-    onSuccess: () => payment(Number(value)),
-    onClose: () =>
-      alert("Transaction incomplete. Please complete the transaction."),
+    onSuccess: () => payment(Number(value) * 100),
+    onClose: () => alert("Wait! complete the transaction!!, don't go!!!!"),
   };
 
   // Store verification results to avoid redundant calls
   const verificationResult = verifySend();
+ const tabs = ["Buy Crypto", "Sell Crypto"];
+  const [activeTab, setActiveTab] = useState<string>(tabs[0]);
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 font-bold text-lg">
@@ -155,20 +206,28 @@ const SingleProfilePage: React.FC = () => {
       ) : (
         <>
           {/* Tab Navigation */}
-          <div className="flex justify-center mb-6">
-            <button className="text-blue-500 font-medium border-b-2 border-blue-500 pb-1 px-4">
-              Buy Crypto
-            </button>
-            <button className="text-gray-500 font-medium pb-1 px-4 hover:text-blue-500">
-              Sell Crypto
-            </button>
+          <div className="flex justify-center mb-6 gap-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={` font-medium border-b-2  pb-1 px-4 ${
+                  activeTab === tab
+                    ? "bg-blue-100 font-semibold"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
 
           {/* Vendor Rates */}
-          <h2 className="mb-4">Vendor Selling Rates:</h2>
+       { activeTab === "Buy Crypto" ? <div> 
+         <h2 className="mb-4">Vendor Selling Rates:</h2>
           <div className="flex justify-between mb-4">
-            <h2>Ton: NGN {userData?.user?.tonRate}</h2>
-            <h2>USDT: NGN {userData?.user?.usdtRate}</h2>
+            <h2>Ton: NGN {userData?.tonRate}</h2>
+            <h2>USDT: NGN {userData?.usdtRate}</h2>
           </div>
 
           {/* Form Fields */}
@@ -250,20 +309,15 @@ const SingleProfilePage: React.FC = () => {
           {!verificationResult.success && !verified ? (
             <Loader />
           ) : (
-            <PaystackButton
-              className="block w-full bg-blue-500 text-white px-4 py-2 rounded-lg"
-              {...componentProps}
-            />
+            <PaystackButton {...componentProps} />
           )}
+      </div> : <SellCrypto/>
+      }
         </>
       )}
 
       {/* Error Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Error"
-      >
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <p>{error?.error}</p>
       </Modal>
     </div>

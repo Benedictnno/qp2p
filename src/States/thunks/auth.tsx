@@ -46,10 +46,9 @@ export const RegisterUser = createAsyncThunk(
         },
         { withCredentials: true }
       );
- const user = jwtDecode(response.data.refreshToken);
- localStorage.setItem("user", JSON.stringify(user));
- localStorage.setItem("loginTime", Date.now());
-
+      const user = jwtDecode(response.data.refreshToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("loginTime", JSON.stringify(Date.now()));
 
       return response.data;
     } catch (error: any) {
@@ -124,12 +123,10 @@ const RegisterUserSlice = createSlice({
         state.email = action.payload.email;
         state.msg = action.payload.message;
         state.success = true;
-       
       })
       .addCase(RegisterUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-        state.msg = action.payload?.data?.message;
+        state.error = action.payload;      
         state.success = false;
       });
   },
