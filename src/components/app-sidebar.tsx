@@ -14,7 +14,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import LogOut from "@/utils/LogOut"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 // This is sample data.
@@ -62,12 +62,13 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // const {user, success,error} = useSelector((state: RootState) => state.login);
- const sessionUser = sessionStorage.getItem("user");
+ const sessionUser = localStorage.getItem("user");
 
    const user = sessionUser ? JSON.parse(sessionUser) : null;
    const firstName = user?.user?.firstName || "Guest";
    const lastName = user?.user?.lastName || "";
 
+   const navigate = useNavigate();
    
   return (
     <Sidebar variant="floating" {...props}>
@@ -104,9 +105,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton asChild isActive={item.isActive}>
                           {item.title === "LogOut" ? (
-                            <Link to={item.url} onClick={()=>LogOut()}>
+                            <button onClick={()=>LogOut(navigate)}>
                               {item.title}
-                            </Link>
+                            </button>
                           ) : (
                             <Link to={item.url}>{item.title}</Link>
                           )}

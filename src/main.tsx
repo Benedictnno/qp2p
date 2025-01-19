@@ -17,13 +17,15 @@ import VerificationPage from "./pages/VerificationPage.tsx";
 import FundWallet from "./pages/FundWallet.tsx";
 import { SetUpDetails } from "./pages/setUpDetailsPage.tsx";
 import SingleProfilePage from "./pages/customersPage.tsx";
+import LandingPage from "./pages/LandingPage.tsx";
 import dotenv from "dotenv";
+import LogOut from "./utils/LogOut.tsx";
 dotenv.config();
 
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashboard",
     element: (
       <ProtectedRoute>
         <App />
@@ -38,6 +40,8 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/profile/:profilesId", element: <SingleProfilePage /> }, // Other child routes
+  { path: "/", element: <LandingPage /> }, // Other child routes
+  // { path: "/logOut", element: <LogOut /> }, // Other child routes
   {
     path: "/set-up-details",
     element: (

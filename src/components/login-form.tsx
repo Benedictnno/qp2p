@@ -16,8 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoginUser } from "@/States/thunks/auth";
 import { AppDispatch, RootState } from "@/States/store";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { useState } from "react";
@@ -27,7 +27,7 @@ type FormData = {
 };
 
 export function LoginForm() {
-  const [visible , setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
   const schema: ZodType<FormData> = z.object({
     email: z.string().email(),
     password: z.string().min(6).max(15),
@@ -35,7 +35,7 @@ export function LoginForm() {
 
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
- const { toast } = useToast()
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -43,12 +43,12 @@ export function LoginForm() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-  const { success,error} = useSelector((state: RootState) => state.login);
+  const { success, error } = useSelector((state: RootState) => state.login);
 
   const submitData = (data: FormData) => {
     dispatch(LoginUser({ email: data.email, password: data.password }));
     console.log("Submitted data:", success);
-    
+
     if (error === "Unauthorized") {
       toast({
         variant: "destructive",
@@ -58,7 +58,7 @@ export function LoginForm() {
       });
     }
     if (success) {
-      navigate("/");
+      navigate("/dashboard");
     }
   };
   return (
@@ -101,7 +101,7 @@ export function LoginForm() {
               </div>
               <Input
                 id="password"
-                type={visible?"text":"password"}
+                type={visible ? "text" : "password"}
                 required
                 {...register("password")}
               />

@@ -17,6 +17,7 @@ export const LoginUser = createAsyncThunk(
 
       const user = jwtDecode(response.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("loginTime", JSON.stringify(Date.now()));
 
       return user;
     } catch (error: any) {
