@@ -39,7 +39,7 @@ const router = createBrowserRouter([
       { path: "fund-wallet", element: <FundWallet /> }, // Other child routes
     ],
   },
-  { path: "/profile/:profilesId", element: <SingleProfilePage /> }, // Other child routes
+  { path: "/profiles/:profilesId", element: <SingleProfilePage /> }, // Other child routes
   { path: "/", element: <LandingPage /> }, // Other child routes
   // { path: "/logOut", element: <LogOut /> }, // Other child routes
   {
