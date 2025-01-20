@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   return (
@@ -13,8 +14,8 @@ const Navbar: React.FC = () => {
           <li className="hover:text-blue-600 cursor-pointer">Career</li>
         </ul>
         <div className="space-x-4">
-          <button className="px-4 py-2 text-blue-600 border border-blue-600 rounded-md">Login</button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md">Sign Up</button>
+          <Link to={'login'} className="px-4 py-2 text-blue-600 border border-blue-600 rounded-md">Login</Link >
+          <Link to={'login'} className="px-4 py-2 bg-blue-600 text-white rounded-md">Sign Up</Link>
         </div>
       </div>
     </nav>

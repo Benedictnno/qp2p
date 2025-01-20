@@ -26,7 +26,7 @@ const data = {
       items: [
         {
           title: "main",
-          url: "/",
+          url: "/dashboard",
         },
         {
           title: "Transaction History",

@@ -7,65 +7,85 @@ import { userBalances } from "@/States/thunks/balance";
 import { Link } from "react-router-dom";
 import { transactions } from "@/States/thunks/transactions";
 import { TonAddress } from "@/States/thunks/CryptoDetails";
+import { addCommasToNumber } from "@/utils/formatNumbers";
+
+interface UserData {
+  exp: number;
+  iat: number;
+  user: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+  };
+}
 
 const Dashboard = () => {
   const [copied, setCopied] = useState<boolean>(false);
-  const { fiatBalance,tonBalance } = useSelector((state: RootState) => state.userBalances);
+  const { fiatBalance, tonBalance } = useSelector(
+    (state: RootState) => state.userBalances
+  );
 
-  const handleCopy = (text:string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-      });
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    });
   };
 
   const dispatch: AppDispatch = useDispatch();
+  const id :string= getUser();
   useEffect(() => {
-      //  const timeout = setTimeout(() => {
+    //  const timeout = setTimeout(() => {
     dispatch(userBalances());
-    dispatch(TonAddress());
+    dispatch(TonAddress(id));
     //  }, 5000);
 
-     const fetchData = async () => {
-          try {
+    const fetchData = async () => {
+      try {
+        dispatch(transactions());
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+      }
+    };
 
-            dispatch(transactions());
-          } catch (error) {
-            console.error("Error in fetchData:", error);
-          }
-        };
-    
-        fetchData();
+    fetchData();
     // return () => clearTimeout(timeout);
   }, []);
 
   const { history, error, success, loading } = useSelector(
-  (state: RootState) => state.transactions
-);
-  const { walletAddress } = useSelector(
-    (state: RootState) => state.tonAddress
+    (state: RootState) => state.transactions
   );
-
+  const { walletAddress } = useSelector((state: RootState) => state.tonAddress);
   
+  function getUser() {
+    const sessionUser: string | null = localStorage.getItem("user");
 
+    if (sessionUser) {
+      const {
+        user: { id },
+      } = JSON.parse(sessionUser);
+      // Do something with the parsed object
+      return id;
+    } else {
+      console.log("No user data found in localStorage");
+    }
+  }
   const currentDate = new Date();
-const todaysTransactions = history.filter((transaction) => {
-  const transactionDate = new Date(transaction.createdAt);
-  return (
-    transactionDate.getFullYear() === currentDate.getFullYear() &&
-    transactionDate.getMonth() === currentDate.getMonth() &&
-    transactionDate.getDate() === currentDate.getDate()
-  );
-});
+  const todaysTransactions = history.filter((transaction) => {
+    const transactionDate = new Date(transaction.createdAt);
+    return (
+      transactionDate.getFullYear() === currentDate.getFullYear() &&
+      transactionDate.getMonth() === currentDate.getMonth() &&
+      transactionDate.getDate() === currentDate.getDate()
+    );
+  });
 
-const sentCount = todaysTransactions.filter((t) => t.status === "sent").length;
-const receivedCount = todaysTransactions.filter((t) => t.status === "Received").length;
-console.log("todays transactions" + todaysTransactions.length);
-console.log("sent transactions" + sentCount);
-console.log("receivedCount transactions" + receivedCount);
-
+  const sentCount = todaysTransactions.filter(
+    (t) => t.status === "sent"
+  ).length;
+  const receivedCount = todaysTransactions.filter(
+    (t) => t.status === "Received"
+  ).length;
 
   const dashBoardCardStyle =
     "m-3 font-[' Inter, system-ui, Avenir, Helvetica, Arial, sans-serif'] font-semibold text-center";
@@ -75,13 +95,10 @@ console.log("receivedCount transactions" + receivedCount);
         <div className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
           <div className={`${dashBoardCardStyle}`}>
             <p>Fiat Balance</p>
-            <h2>NGN {fiatBalance}</h2>
+            <h2>NGN {addCommasToNumber(fiatBalance)}</h2>
           </div>
           <Button variant="outline" className="w-10/12 self-center">
-          <Link to={'fund-wallet'}>
-          
-            Add Funds
-          </Link>
+            <Link to={"fund-wallet"}>Add Funds</Link>
           </Button>
         </div>
         <div className="aspect-video rounded-xl bg-muted/50 flex flex-col justify-center">
@@ -93,7 +110,7 @@ console.log("receivedCount transactions" + receivedCount);
           <Button
             variant="outline"
             className="w-10/12 self-center"
-            onClick={()=> handleCopy(walletAddress)}
+            onClick={() => handleCopy(walletAddress)}
           >
             <p className="w-20 truncate">{walletAddress}</p>
             <span>{copied ? "Copied!" : "Copy"}</span>
@@ -107,7 +124,7 @@ console.log("receivedCount transactions" + receivedCount);
           <Button
             variant="outline"
             className="w-10/12 self-center"
-            onClick={()=>handleCopy}
+            onClick={() => handleCopy}
           >
             <p className="w-20 truncate">
               iuygvbnmlughbnmmnsskjjjjjjsssssssssssss

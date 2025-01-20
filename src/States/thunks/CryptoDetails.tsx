@@ -3,10 +3,10 @@ import axios from "axios";
 
 export const TonAddress = createAsyncThunk(
   "Ton Wallet Address",
-  async (_, { rejectWithValue }) => {
+  async (id:string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/v1/crypto/TonAddress",
+        `http://localhost:5000/api/v1/crypto/TonAddress/${id}`,
         {
           withCredentials: true,
         }
