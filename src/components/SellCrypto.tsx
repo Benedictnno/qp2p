@@ -1,11 +1,12 @@
-import { RootState } from "@/States/store";
+import { AppDispatch, RootState } from "@/States/store";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { z, ZodType } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addCommasToNumber } from "@/utils/formatNumbers";
+import { getAllBanks } from "@/States/thunks/Banks";
 
 
 interface BuyerUserData {
@@ -28,7 +29,7 @@ function SellCrypto() {
   const [receivingCoin, setReceivingCoin] = useState<string>("");
   const [receivingBalance, setReceivingBalance] = useState<number>(0);
   const [copied, setCopied] = useState<boolean>(false);
-
+const dispatch: AppDispatch = useDispatch();
   const {
     userData: { user,tonRate,usdtRate },
   } = useSelector(
@@ -60,6 +61,7 @@ function SellCrypto() {
     const wallet = await axios.get(
       `http://localhost:5000/api/v1/crypto/TonAddress/${user}`
     );
+    
     setWalletAddress(wallet.data.walletAddress);
   };
 
@@ -77,9 +79,13 @@ function SellCrypto() {
     }
    
     
-  useEffect(() => {
-    getWalletAddress();
+    useEffect(() => {
+      getWalletAddress();
+     dispatch(getAllBanks())
   }, []);
+
+
+  const { allBanks } = useSelector((state: RootState) => state.AllBanks);
 
   return (
     <div>
@@ -121,6 +127,30 @@ function SellCrypto() {
       />
 
       <p>You'll receive {addCommasToNumber(receivingBalance)} NGN</p>
+      <div className="mb-4">
+        <label>Select Bank</label>
+        <select
+          required
+          {...register("coin")}
+          className="block w-full px-4 py-2 border rounded-lg"
+        >
+          {allBanks.map((bank: any) => {
+            return (
+              <option value={bank.code}>
+                {bank.name} ({bank.slug})
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
+      <input
+        type="number"
+        required
+        {...register("sendersAddress")}
+        placeholder="your Account number"
+        className="block w-full px-4 py-2 border rounded-lg"
+      />
 
       <p onClick={() => handleCopy(walletAddress)}>
         {walletAddress} <span>{copied ? "Copied!" : "Copy"}</span>

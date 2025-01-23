@@ -47,6 +47,8 @@ const userBalancesSlice = createSlice({
       })
       .addCase(userBalances.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload?.data);
+        
         state.fiatBalance = action.payload?.data.wallet.balance
         state.tonBalance = action.payload?.data.tonBalance.balance
         state.success = true;
