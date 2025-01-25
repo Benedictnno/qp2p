@@ -17,14 +17,21 @@ export const getAllBanks = createAsyncThunk(
     }
   }
 );
+
 export const verifyBank = createAsyncThunk(
   "users bank",
-  async (bankDetails:{accountNumber:string , backCode:string}, { rejectWithValue }) => {
+  async (
+    bankDetails: { accountNumber: string; bankCode: string },
+    { rejectWithValue }
+  ) => {
     try {
+      console.log(bankDetails);
+
       const response = await axios.post(
-        "http://localhost:5000/api/v1/fiat/fund/verify",{accountNumber:bankDetails.accountNumber , backCode:bankDetails.backCode}
+        "http://localhost:5000/api/v1/fiat/fund/verify",
         {
-          withCredentials: true,
+          accountNumber: bankDetails.accountNumber,
+          bankCode: bankDetails.bankCode,
         }
       );
       return response;
@@ -34,11 +41,12 @@ export const verifyBank = createAsyncThunk(
   }
 );
 
-const initialBankState = {
-  allBanks: [],
-  tonBalance: "",
-  loading: false,
+const initialBankState:any = {
+  verifiedBank:{},
+  message: "",
+  recipiet: false,
   error: null,
+  loading: false,
   success: false,
 };
 const initialState = {
@@ -63,17 +71,14 @@ const getAllBanksSlice = createSlice({
       .addCase(getAllBanks.fulfilled, (state, action) => {
         state.loading = false;
         state.allBanks = action.payload?.data.data;
-             
+
         state.success = true;
       })
       .addCase(getAllBanks.rejected, (state, action) => {
         state.loading = false;
-       
       });
   },
-
 });
-
 
 const verifyBanksSlice = createSlice({
   name: "verifyBanks",
@@ -88,7 +93,7 @@ const verifyBanksSlice = createSlice({
       })
       .addCase(getAllBanks.fulfilled, (state, action) => {
         state.loading = false;
-        state.allBanks = action.payload?.data.data;
+        state.verifiedBank = action.payload?.data;
 
         state.success = true;
       })

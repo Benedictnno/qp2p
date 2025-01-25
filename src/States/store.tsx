@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {reducers} from "./thunks/auth";
+import { reducers } from "./thunks/auth";
 import userBalancesReducer from "./thunks/balance";
 import transactionsReducer from "./thunks/transactions";
 
 import getBuyerUserDataReducer from "./thunks/getBuyerUserData";
 import verifySendersWalletReducer from "./thunks/verifySendersWallet";
-import  {profileReducers} from "./thunks/profileDetails";
-import {TonWalletReducers} from "./thunks/CryptoDetails";
-import {bankReducer } from "./thunks/Banks";
-
+import { profileReducers } from "./thunks/profileDetails";
+import { TonWalletReducers } from "./thunks/CryptoDetails";
+import { bankReducer } from "./thunks/Banks";
+import { sendFiatReducer } from "./thunks/SendFiat";
 
 export const store = configureStore({
   reducer: {
@@ -20,10 +20,11 @@ export const store = configureStore({
     getBuyerUserData: getBuyerUserDataReducer,
     verifyWallet: verifySendersWalletReducer,
     transactions: transactionsReducer,
-    AllBanks: bankReducer.getAllBanksSlice,               
-    verifyBank: bankReducer.verifyBanksSlice,               
+    AllBanks: bankReducer.getAllBanksSlice,
+    verifyBank: bankReducer.verifyBanksSlice,
     tonAddress: TonWalletReducers.TonAddressSlice,
     tonMnemonics: TonWalletReducers.TonMnemonicsSlice,
+    sendFiat: sendFiatReducer.sendFiatSlice,
   },
 });
 export type AppDispatch = typeof store.dispatch;
