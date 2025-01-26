@@ -26,6 +26,7 @@ interface FormData {
 interface VerifyCryptoWalletState {
   formData: FormData;
   loading: boolean;
+  burger: boolean;
   error: string | null;
   success: boolean;
 }
@@ -41,6 +42,7 @@ const initialState: VerifyCryptoWalletState = {
     Phone: "",
     name: "",
   },
+  burger: false,
   loading: false,
   error: null,
   success: false,
@@ -85,6 +87,12 @@ const verifyCryptoWalletSlice = createSlice({
     },
     // Reducer to reset the state to its initial value
     resetState: () => initialState,
+    Open: (state) => {
+      state.burger = true;
+    },
+    Close: (state) => {
+      state.burger = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,5 +119,5 @@ const verifyCryptoWalletSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { updateFormData, resetState } = verifyCryptoWalletSlice.actions;
+export const { updateFormData, resetState,Open,Close } = verifyCryptoWalletSlice.actions;
 export default verifyCryptoWalletSlice.reducer;

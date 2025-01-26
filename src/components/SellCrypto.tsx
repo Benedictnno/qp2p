@@ -189,7 +189,7 @@ function SellCrypto() {
       ) : (
         <p>Please select a bank</p>
       )}
-      <p onClick={() => handleCopy(walletAddress)}>
+      <p onClick={() => handleCopy(walletAddress)} >
         {walletAddress} <span>{copied ? "Copied!" : "Copy"}</span>
       </p>
       <button onClick={handleSubmit(submitData)}>I have sent it</button>
