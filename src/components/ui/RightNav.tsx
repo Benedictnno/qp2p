@@ -37,7 +37,10 @@ const Ul = styled.ul<{ open: boolean }>`
     top: 0;
     right: 0;
     height: 100vh;
-    width: 320px;
+    width: 100vw;
+z-index: 15;
+
+    /* width: 320px; */
     // padding-top: 3.5rem;
     // padding-buttom: -3.5rem;
     transition: transform 0.3s ease-in-out;

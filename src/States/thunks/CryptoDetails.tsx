@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const TonAddress = createAsyncThunk(
   "Ton Wallet Address",
-  async (id:string, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `http://localhost:5000/api/v1/crypto/TonAddress/${id}`,
@@ -35,7 +35,6 @@ export const TonMnemonics = createAsyncThunk(
 );
 
 export type TonAddressType = {
-  
   walletAddress: string;
   loading: boolean;
   error: string | null | unknown;
@@ -51,7 +50,7 @@ const addressInitialState: TonAddressType = {
 
 const TonAddressSlice = createSlice({
   name: "TonAddress",
-  initialState:addressInitialState,
+  initialState: addressInitialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -72,12 +71,8 @@ const TonAddressSlice = createSlice({
   },
 });
 
-
-
-
 // get mnemonics
 export type TonMnemonicsType = {
-  
   mnemonics: string;
   loading: boolean;
   error: string | null | unknown;
@@ -85,7 +80,7 @@ export type TonMnemonicsType = {
 };
 
 const mnemonicsInitialState: TonMnemonicsType = {
-  mnemonics:"",
+  mnemonics: "",
   loading: false,
   error: null,
   success: false,

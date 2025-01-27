@@ -1,26 +1,32 @@
 import { AppDispatch, RootState } from "@/States/store";
 import { TonAddress, TonMnemonics } from "@/States/thunks/CryptoDetails";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/button";
 
 function WalletDetails() {
   const dispatch: AppDispatch = useDispatch();
-const [copied, setCopied] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
-  const handleCopy = (text:string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-      });
+  const { user } = useSelector((state: RootState) => state.login);
+
+  // Retrieve the saved user from sessionStorage, fallback to Redux user if null
+  const Id = useMemo(() => {
+    const User = localStorage.getItem("user");
+    return User ? JSON.parse(User) : user;
+  }, [user]);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    });
   };
 
   useEffect(() => {
-    dispatch(TonAddress());
+    dispatch(TonAddress(Id.user.id));
     dispatch(TonMnemonics());
-  }, [dispatch]);
+  }, []);
 
   const {
     walletAddress,

@@ -10,7 +10,7 @@ import { Close, Open } from "@/States/thunks/verifySendersWallet";
 const StyledBurger = styled.div<{ open: boolean }>`
   width: 2rem;
   height: 2rem;
-  position: fixed;
+  position: sticky;
   top: 1rem;
   right: 1.3rem;
   z-index: 20;

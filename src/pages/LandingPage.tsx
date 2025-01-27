@@ -61,7 +61,7 @@ const QP2PLanding = () => {
             <li className="hover:text-blue-600 cursor-pointer">About</li>
             <li className="hover:text-blue-600 cursor-pointer">Contact</li>
           </ul>
-          <Burger/>
+          <Burger />
           <div className="space-x-4 max-sm:hidden">
             <Link
               to={"/login"}
@@ -84,15 +84,19 @@ const QP2PLanding = () => {
         <div className="container mx-auto text-center px-4">
           <h1 className="text-4xl font-bold text-gray-800">
             Welcome to <span className="text-blue-600">QP2P</span>:
-            {/* <FlipWords
+          </h1>
+          <h1 className="text-4xl font-bold text-gray-800">
+            <FlipWords
               words={[
                 "Automating Peer-to-Peer Crypto Trading",
-                " Secure, Fast, and Automated P2P Transactions",
-                "Fast, Secure, and Transparent: Trade Smarter with QP2P",
-                "Discover the Future of Peer-to-Peer Crypto Trading",
+                "Secure, Fast, and Automated P2P Transactions",
+                "Fast, Secure, and Transparent: Trade P2P",
+                "Designed for Traders, Built with Innovation",
                 "Start Trading Smarter Today with QP2P",
               ]}
-            /> */}
+              duration={5000}
+              className="z-0"
+            />
           </h1>
           <p className="text-gray-600 mt-4">
             Revolutionize your trading experience with QP2P, the platform that
