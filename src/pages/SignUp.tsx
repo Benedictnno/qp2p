@@ -76,7 +76,7 @@ const [visible , setVisible] = useState(false)
   }
   return (
     <>
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto my-3 max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>

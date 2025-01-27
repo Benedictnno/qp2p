@@ -20,8 +20,9 @@ import SingleProfilePage from "./pages/customersPage.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import dotenv from "dotenv";
 import LogOut from "./utils/LogOut.tsx";
+import AboutPage from "./pages/About.tsx";
+import HomePage from "./pages/HomePage.tsx";
 dotenv.config();
-
 
 const router = createBrowserRouter([
   {
@@ -40,8 +41,30 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/profiles/:profilesId", element: <SingleProfilePage /> }, // Other child routes
-  { path: "/", element: <LandingPage /> }, // Other child routes
-  // { path: "/logOut", element: <LogOut /> }, // Other child routes
+  {
+    path: "/",
+    element: (
+      <PublicRoute>
+        <LandingPage />
+      </PublicRoute>
+    ),
+    children: [
+      { index:true , element: <HomePage /> }, // Other child routes
+      { path: "about", element: <AboutPage /> }, // Other child routes
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+      {
+        path: "/verify/:token",
+        element: <VerificationPage />,
+      },
+    ],
+  }, // Other child routes
   {
     path: "/set-up-details",
     element: (
@@ -50,30 +73,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   }, // Default child route
-  {
-    path: "/login",
-    element: (
-      <PublicRoute>
-        <Login />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/sign-up",
-    element: (
-      <PublicRoute>
-        <SignUp />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/verify/:token",
-    element: (
-      <PublicRoute>
-        <VerificationPage />
-      </PublicRoute>
-    ),
-  },
+  // { path: "/logOut", element: <LogOut /> }, // Other child routes
 ]);
 
 createRoot(document.getElementById("root")!).render(

@@ -49,7 +49,7 @@ export function LoginForm() {
     dispatch(LoginUser({ email: data.email, password: data.password }));
     console.log("Submitted data:", success);
 
-    if (error === "Unauthorized") {
+    if (error || !success) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
@@ -125,7 +125,7 @@ export function LoginForm() {
           </div>
         </form>
       </CardContent>
-      {error === "Unauthorized" && <Toaster />}
+       <Toaster />
     </Card>
   );
 }

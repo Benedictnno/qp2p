@@ -4,6 +4,7 @@ import { DateFormater } from "@/utils/Date.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { transactions } from "@/States/thunks/transactions";
 import { AppDispatch, RootState } from "@/States/store";
+import { addCommasToNumber } from "@/utils/formatNumbers";
 
 function TransactionHistory() {
   const dispatch: AppDispatch = useDispatch();
@@ -77,7 +78,9 @@ function TransactionHistory() {
                 <td className="px-6 py-4">{item.token || "N/A"}</td>
                 <td className="px-6 py-4">{item.quantity || "N/A"}</td>
                 <td className="px-6 py-4">{item.status || "N/A"}</td>
-                <td className="px-6 py-4">{item.amount || "N/A"}</td>
+                <td className="px-6 py-4">
+                  {addCommasToNumber(item.amount) || "N/A"}
+                </td>
                 <td className="px-6 py-4">
                   {DateFormater(item.createdAt) || "N/A"}
                 </td>

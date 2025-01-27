@@ -38,7 +38,7 @@ const Ul = styled.ul<{ open: boolean }>`
     right: 0;
     height: 100vh;
     width: 100vw;
-z-index: 15;
+    z-index: 15;
 
     /* width: 320px; */
     // padding-top: 3.5rem;
@@ -62,13 +62,18 @@ const RightNav = () => {
       {/* <ul > */}
       <nav className="">
         <div className="text-white ">
-          <h1 className="text-2xl font-bold ">QP2P</h1>
+          <Link to="/" className="text-2xl font-bold ">
+            QP2P
+          </Link>
           <ul className="my-2">
-            <li
-              onClick={() => dispatch(Close())}
-              className="hover:text-blue-600 cursor-pointer"
-            >
-              Home
+            <li>
+              <Link
+                to={"/"}
+                onClick={() => dispatch(Close())}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                Home
+              </Link>
             </li>
             <li
               onClick={() => dispatch(Close())}
@@ -82,29 +87,37 @@ const RightNav = () => {
             >
               How It Works
             </li>
-            <li
-              onClick={() => dispatch(Close())}
-              className="hover:text-blue-600 cursor-pointer"
-            >
-              About
+            <li>
+              <Link
+                to={"about"}
+                onClick={() => dispatch(Close())}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                About
+              </Link>
             </li>
-            <li
-              onClick={() => dispatch(Close())}
-              className="hover:text-blue-600 cursor-pointer"
-            >
-              Contact
+            <li>
+              <Link
+                to={"about"}
+                onClick={() => dispatch(Close())}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                Contact
+              </Link>
             </li>
           </ul>
 
           <div className="space-x-4 ">
             <Link
+              onClick={() => dispatch(Close())}
               to={"/login"}
-              className="px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50"
+              className="px-4 py-2 text-white border border-blue-600 rounded-md hover:bg-blue-50"
             >
               Login
             </Link>
             <Link
-              to={"/signup"}
+              onClick={() => dispatch(Close())}
+              to={"/sign-up"}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               Get Started
