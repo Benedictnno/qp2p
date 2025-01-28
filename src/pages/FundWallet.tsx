@@ -10,7 +10,7 @@ import { useState } from "react";
 type FormData = {
   phone: string;
   email: string;
-  amount: number;
+  amount: string;
   Bank: string;
 };
 type PayStack = {
@@ -51,9 +51,10 @@ function FundWallet() {
   const schema: ZodType<FormData> = z.object({
     phone: z.string().min(2).max(11),
     email: z.string().email(),
-    amount: z.number().min(2),
+    amount: z.string(),
     Bank: z.string().min(3),
   });
+
   const sessionUser = localStorage.getItem("user");
 
   const { user } = sessionUser ? JSON.parse(sessionUser) : null;
@@ -65,6 +66,15 @@ function FundWallet() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+   const handleChange = (e) => {
+    const { name, value } = e.target; // Destructure the name and value from the input
+    setPhoneAmount((prev) => ({
+      ...prev, // Spread the previous state
+      [name]: value, // Update the changed field
+    }));
+  };
+
   const style = {
     input:
       "block w-full px-4 py-2 mb-4 rounded-md border border-gray-300 focus:outline-none focus:border-primary-500",
@@ -75,11 +85,11 @@ function FundWallet() {
     className: style.button,
     children: "Pay Now",
     email: user.email,
-    amount:1000 * 100,
-    Phone:"345678996378490",
+    amount: PhoneAmount.amount * 100,
+    Phone: PhoneAmount.phone,
     metadata: {
       name: user.name,
-      Phone:"345678996378490",
+      Phone: PhoneAmount.phone,
       custom_fields: [
         {
           display_name: "Phone Number",
@@ -91,26 +101,27 @@ function FundWallet() {
     publicKey,
     text: "Pay Now",
     onSuccess: () => payment(PhoneAmount.amount),
-    onClose: () => alert("Wait! complete the transaction!!, don't go!!!!"),
+    onClose: () => alert("Wait! complete the transaction!!"),
   };
 
   const payment = async (amount: number) => {
     await axios.post("http://localhost:5000/api/v1/fiat/fund", {
-      amt: 10000,
+      amt: PhoneAmount.amount,
       user: user.id,
       email: user.email,
       name: user.name,
       token: "Funded Account",
-      quantity: amount,
+      quantity: PhoneAmount.amount,
     });
   };
- 
+
   const submitData = (data: FormData) => {
-    console.log('====================================');
-    console.log(data);
-    console.log(PhoneAmount);
-    console.log('====================================');
-    // setPhoneAmount(data);
+    
+    setPhoneAmount((prev) => ({
+      ...prev,
+      amount: data.amount,
+      phone: data.phone,
+    }));
   };
 
   return (
@@ -134,7 +145,9 @@ function FundWallet() {
         <input
           required
           id="phone"
-          {...register("phone")}
+        
+        name="phone"
+        onChange={handleChange}
           minLength={11}
           maxLength={11}
           type="number"
@@ -148,10 +161,11 @@ function FundWallet() {
         <input
           required
           id="amount"
-          {...register("amount")}
+         name="amount"
+        onChange={handleChange}
           minLength={11}
           maxLength={11}
-          type="number" 
+          type="number"
           // value={PhoneAmount.amount}
           className="w-full border rounded-md px-3 py-2"
           placeholder="Enter amount"
@@ -159,6 +173,7 @@ function FundWallet() {
         <p>{errors?.amount?.message}</p>
       </div>
       <button type="submit" onClick={handleSubmit(submitData)}>
+      
         <PaystackButton {...componentProps} />
       </button>
     </form>

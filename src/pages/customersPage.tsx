@@ -186,7 +186,7 @@ const SingleProfilePage: React.FC = () => {
     publicKey,
     text: "Pay Now",
     onSuccess: () => payment(Number(value) * 100),
-    onClose: () => alert("Wait! complete the transaction!!, don't go!!!!"),
+    onClose: () => alert("Wait! complete the transaction!!"),
   };
 
   // Store verification results to avoid redundant calls
